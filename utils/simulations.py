@@ -104,7 +104,7 @@ def calculate_multivariate_params(df_combined):
     }
     return multivariate_params
 
-def simulate_multivariate_with_electricity(multivariate_params, electricity_params, n_days, 
+def simulate_multivariate_with_electricity(multivariate_params, n_days, electricity_params=None,  
                                            n_simulations=1000, start_date=None, random_seed=None):
     """
     Simulate multivariate paths including:
@@ -143,21 +143,22 @@ def simulate_multivariate_with_electricity(multivariate_params, electricity_para
     series_names = multivariate_params['series_names']
     hashprice_idx = series_names.index('hashprice')
     btc_idx = series_names.index('btc')
-    electricity_idx = series_names.index('electricity')
 
     # Extract parameters
     mu_daily = multivariate_params['mu_daily']
     cov_daily = multivariate_params['cov_daily']
 
     # Electricity parameters
-    phi = electricity_params['phi']
-    sigma_epsilon = electricity_params['sigma_epsilon']
-    alpha = electricity_params['alpha']
-    T_year = electricity_params['T_year']
-    T_month = electricity_params['T_month']
-    date_min = electricity_params['date_min']
-    last_elec_log_price = electricity_params['last_elec_log_price']
-    last_elec_residual = electricity_params['last_residual']
+    if electricity_params is not None:
+        electricity_idx = series_names.index('electricity')
+        phi = electricity_params['phi']
+        sigma_epsilon = electricity_params['sigma_epsilon']
+        alpha = electricity_params['alpha']
+        T_year = electricity_params['T_year']
+        T_month = electricity_params['T_month']
+        date_min = electricity_params['date_min']
+        last_elec_log_price = electricity_params['last_elec_log_price']
+        last_elec_residual = electricity_params['last_residual']
 
     # Set start date for seasonal component (use last date from training data)
     if start_date is None:
@@ -168,7 +169,8 @@ def simulate_multivariate_with_electricity(multivariate_params, electricity_para
     paths = np.zeros((n_simulations, n_series, n_days + 1))
 
     # Initialize electricity residuals with last observed residual
-    paths[:, electricity_idx, 0] = last_elec_residual
+    if electricity_params is not None:
+        paths[:, electricity_idx, 0] = last_elec_residual
 
     # Cholesky decomposition for correlated shocks
     try:
@@ -197,65 +199,71 @@ def simulate_multivariate_with_electricity(multivariate_params, electricity_para
         paths[:, hashprice_idx, t+1] = period_returns[:, hashprice_idx]
         paths[:, btc_idx, t+1] = period_returns[:, btc_idx]
         
-        # For electricity residual: AR(1) process
-        # ε_t = φ * ε_{t-1} + σ_ε * innovation_t
-        # The innovation is correlated with hashprice/btc shocks via Cholesky
-        # The correlated_shock already has the right correlation structure
-        # But we need to scale it by sigma_epsilon for the AR(1) innovation
-        # Note: The covariance matrix includes electricity_residual, so the correlated shock
-        # already accounts for correlation. We just need to use it as the innovation.
-        elec_innovation = correlated_shocks[:, t, electricity_idx]
-        # Scale by sigma_epsilon to match the AR(1) innovation variance
-        # The correlated shock has std dev from covariance, we need to normalize
-        elec_std_from_cov = np.sqrt(cov_daily[electricity_idx, electricity_idx])
-        normalized_innovation = elec_innovation / elec_std_from_cov * sigma_epsilon
-        paths[:, electricity_idx, t+1] = (
-            phi * paths[:, electricity_idx, t] + 
-            normalized_innovation
-        )
+        if electricity_params is not None:
+            # For electricity residual: AR(1) process
+            # ε_t = φ * ε_{t-1} + σ_ε * innovation_t
+            # The innovation is correlated with hashprice/btc shocks via Cholesky
+            # The correlated_shock already has the right correlation structure
+            # But we need to scale it by sigma_epsilon for the AR(1) innovation
+            # Note: The covariance matrix includes electricity_residual, so the correlated shock
+            # already accounts for correlation. We just need to use it as the innovation.
+            elec_innovation = correlated_shocks[:, t, electricity_idx]
+            # Scale by sigma_epsilon to match the AR(1) innovation variance
+            # The correlated shock has std dev from covariance, we need to normalize
+            elec_std_from_cov = np.sqrt(cov_daily[electricity_idx, electricity_idx])
+            normalized_innovation = elec_innovation / elec_std_from_cov * sigma_epsilon
+            paths[:, electricity_idx, t+1] = (
+                phi * paths[:, electricity_idx, t] + 
+                normalized_innovation
+            )
+    if electricity_params is not None:
+        # Reconstruct electricity prices from residuals
+        # Calculate dates for seasonal component
+        dates = pd.date_range(start=start_date, periods=n_days+1, freq='D')
 
-    # Reconstruct electricity prices from residuals
-    # Calculate dates for seasonal component
-    dates = pd.date_range(start=start_date, periods=n_days+1, freq='D')
+        # Initialize electricity price paths (log prices)
+        electricity_prices = np.zeros((n_simulations, n_days + 1))
 
-    # Initialize electricity price paths (log prices)
-    electricity_prices = np.zeros((n_simulations, n_days + 1))
+        # Get last observed electricity log price
+        # last_elec_price = df_data_train['electricity'].iloc[-1]
+        electricity_prices[:, 0] = last_elec_log_price
 
-    # Get last observed electricity log price
-    # last_elec_price = df_data_train['electricity'].iloc[-1]
-    electricity_prices[:, 0] = last_elec_log_price
-
-    # Calculate seasonal component and reconstruct prices for each time step
-    for t in range(n_days + 1):
-        # Calculate days from date_min for seasonal component
-        days = (dates[t] - date_min).days
+        # Calculate seasonal component and reconstruct prices for each time step
+        for t in range(n_days + 1):
+            # Calculate days from date_min for seasonal component
+            days = (dates[t] - date_min).days
+            
+            sin_year = np.sin(2 * np.pi * days / T_year)
+            cos_year = np.cos(2 * np.pi * days / T_year)
+            sin_month = np.sin(2 * np.pi * days / T_month)
+            cos_month = np.cos(2 * np.pi * days / T_month)
+            
+            seasonal = (
+                alpha[0, 0] +  # constant
+                alpha[1, 0] * sin_year +
+                alpha[2, 0] * cos_year +
+                alpha[3, 0] * sin_month +
+                alpha[4, 0] * cos_month
+            )
+            
+            # Electricity log price = seasonal + residual
+            if t == 0:
+                # Initial price: use last observed price (should match seasonal + last residual)
+                electricity_prices[:, t] = last_elec_log_price
+            else:
+                # Update: seasonal component + AR(1) residual
+                electricity_prices[:, t] = seasonal + paths[:, electricity_idx, t]
         
-        sin_year = np.sin(2 * np.pi * days / T_year)
-        cos_year = np.cos(2 * np.pi * days / T_year)
-        sin_month = np.sin(2 * np.pi * days / T_month)
-        cos_month = np.cos(2 * np.pi * days / T_month)
-        
-        seasonal = (
-            alpha[0, 0] +  # constant
-            alpha[1, 0] * sin_year +
-            alpha[2, 0] * cos_year +
-            alpha[3, 0] * sin_month +
-            alpha[4, 0] * cos_month
-        )
-        
-        # Electricity log price = seasonal + residual
-        if t == 0:
-            # Initial price: use last observed price (should match seasonal + last residual)
-            electricity_prices[:, t] = last_elec_log_price
-        else:
-            # Update: seasonal component + AR(1) residual
-            electricity_prices[:, t] = seasonal + paths[:, electricity_idx, t]
-    
-    return {
-            'hashprice': paths[:, hashprice_idx, :],
-            'btc': paths[:, btc_idx, :],
-            'electricity': electricity_prices
-        }
+        return {
+                'hashprice': paths[:, hashprice_idx, :],
+                'btc': paths[:, btc_idx, :],
+                'electricity': electricity_prices
+            }
+    else:
+        return {
+                'hashprice': paths[:, hashprice_idx, :],
+                'btc': paths[:, btc_idx, :]
+            }
 
 def convert_to_price(simulations, df_data_train):
     """

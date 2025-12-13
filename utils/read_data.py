@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-def read_data(data_path):
+def read_data(data_path, is_electricity_constant=False):
   """
   Reads and preprocesses Hashprice, BTC, and Electricity data from CSV files.
 
@@ -21,9 +21,10 @@ def read_data(data_path):
   files_pm['btc']['col_date_name'] = 'Date'
   files_pm['btc']['col_price'] = 'Adj Close'
 
-  files_pm['electricity'] = {'file_name': 'Electricity data ERCOT.csv'}
-  files_pm['electricity']['col_date_name'] = 'Date'
-  files_pm['electricity']['col_price'] = 'price'
+  if not is_electricity_constant:
+    files_pm['electricity'] = {'file_name': 'Electricity data ERCOT.csv'}
+    files_pm['electricity']['col_date_name'] = 'Date'
+    files_pm['electricity']['col_price'] = 'price'
 
   df_data = pd.DataFrame([])
   for key, pm in files_pm.items():

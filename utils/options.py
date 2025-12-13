@@ -126,18 +126,27 @@ def base_bs(df_prices, df_return, delta_t, r, kappa, basis_type=None):
   Returns:
   pd.DataFrame: A DataFrame containing the basis functions.
   """
+  df_return_aux = np.log(1 + df_return / df_prices)
 
-  df_ret_std = df_return.std()
-  df_ret_cor = df_return.corr()
-  df_ret_mean = df_return.mean()
-
+  # print('df_prices')
+  # print(df_prices.head())
+  # print('df_return')
+  # print(df_return.head())
+  df_ret_std = df_return_aux.std()
+  df_ret_cor = df_return_aux.corr()
+  df_ret_mean = df_return_aux.mean()
+  # print('-' * 10)
+  # print(df_ret_std)
+  # print(df_ret_cor)
+  # print(df_ret_mean)
+  # print('-' * 10)
   df_mean = df_prices.mean()
+  # print(df_mean)
 
   assets = {}
   for i, asset in enumerate(df_prices.columns):
     assets[i] = asset
-  corr = df_ret_cor[assets[0]][assets[1]]
-
+  
   if basis_type is None:
     basis_type = {'pol_order': 2}
     basis_type['option_basis'] = 0
@@ -151,10 +160,13 @@ def base_bs(df_prices, df_return, delta_t, r, kappa, basis_type=None):
 
   if basis_type['option_basis'] == 'black-scholes':
     for asset in df_prices.columns:
-      df_base['call_option'] = blsprice(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset])
+      # print('-' * 10)
+      # print(df_prices[asset].head())
+      # print(asset, df_mean[asset], r, delta_t, df_ret_std[asset])
+      df_base['call_option'] = blsprice(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset] * np.sqrt(252))
   elif basis_type['option_basis'] == 'margrabe':
     kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
-
+    corr = df_ret_cor[assets[0]][assets[1]]
     df_base['call_option'] = margrabe_exchange_option_price(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], \
                                                                    df_ret_std[assets[0]], kappa_aux * df_ret_std[assets[1]], \
                                                                    df_ret_mean[assets[0]], df_ret_mean[assets[1]], \
@@ -176,11 +188,11 @@ def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
   Returns:
   pd.DataFrame: A DataFrame containing the delta-weighted basis functions.
   """
+  df_return_aux = np.log(1 + df_return / df_prices)
 
-  df_ret_std = df_return.std()
-  df_ret_cor = df_return.corr()
-  df_ret_mean = df_return.mean()
-
+  df_ret_std = df_return_aux.std()
+  df_ret_cor = df_return_aux.corr()
+  df_ret_mean = df_return_aux.mean()
   df_mean = df_prices.mean()
 
   if basis_type is None:
@@ -190,7 +202,6 @@ def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
   assets = {}
   for i, asset in enumerate(df_prices.columns):
     assets[i] = asset
-  corr = df_ret_cor[assets[0]][assets[1]]
 
   df_base = pd.DataFrame([], index=df_prices.index)
   for asset in df_prices.columns: # Fix: Populate assets dictionary correctly
@@ -200,9 +211,10 @@ def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
 
   if basis_type['option_basis'] == 'black-scholes':
     for asset in df_prices.columns:
-      df_base[f'dl_option_{asset}'] = blsdelta(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset])
+      df_base[f'dl_option_{asset}'] = blsdelta(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset] * np.sqrt(252))
       df_base[f'dl_option_{asset}'] *= df_return[asset]
   elif basis_type['option_basis'] == 'margrabe':
+    corr = df_ret_cor[assets[0]][assets[1]]
     kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
     delta_x, delta_y = margrabe_exchange_option_delta(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], \
                                                                    df_ret_std[assets[0]], kappa_aux * df_ret_std[assets[1]], \
@@ -231,7 +243,7 @@ def optimization(df_m, df_c):
   opt_value = mt_res_aux.T @ mt_res_aux
   return mt_delta, opt_value
 
-def calculate_real_option(prices, basis_type, dates_project_window, dates_parameters, investment_parameters, others_parameters, g_alpha):
+def calculate_real_option(prices, hedge_prices, basis_type, dates_project_window, dates_parameters, investment_parameters, others_parameters, g_alpha):
     """
     Calculates the real option value using the Least Squares Monte Carlo (LSM) method.
 
@@ -267,9 +279,9 @@ def calculate_real_option(prices, basis_type, dates_project_window, dates_parame
     for date in reversed(dates_project_window):
         # print(end_date, date, date_nxt)
         # 1. Calculate the project value (NPV - K) and intrinsic value for the current date
-        # print('date', date)
-        df_prices = obtain_prices(prices, date)
-        df_project_value[date] = gf.calculate_g_tilde(df_prices, kappa, g_alpha)
+        print('date', date)
+        df_prices_g = obtain_prices(prices, date)
+        df_project_value[date] = gf.calculate_g_tilde(df_prices_g, kappa, g_alpha)
 
         df_intrinsic_value[date] = df_project_value[date].copy()
         df_intrinsic_value.loc[df_intrinsic_value[date] < 0, date] = 0 # Intrinsic value cannot be negative
@@ -278,11 +290,11 @@ def calculate_real_option(prices, basis_type, dates_project_window, dates_parame
         if date == end_date:
             df_option_value[date] = df_intrinsic_value[date].copy()
             df_call_value[date] = df_option_value[date]
-            df_prices_nxt = obtain_prices(prices, date)
+            df_prices_nxt = obtain_prices(hedge_prices, date)
 
         # 3. For all other dates, calculate the continuation value
         else :
-            df_prices = obtain_prices(prices, date)
+            df_prices = obtain_prices(hedge_prices, date)
             discount_factor = np.exp(-rho * delta_time)
             df_return = df_prices_nxt * discount_factor - df_prices
 
@@ -307,6 +319,8 @@ def calculate_real_option(prices, basis_type, dates_project_window, dates_parame
                 df_k = base_bs(df_prices, df_return, delta_time, rho, kappa, basis_type).fillna(0)
                 df_h = base_bs_delta(df_prices, df_return, delta_time, rho, kappa, basis_type).fillna(0)
                 df_m = pd.concat((df_k, df_h), axis=1)
+                print(df_m.head())
+                print(df_m.corr())
 
                 # Run regression to find coefficients (γ_a^j) and estimate continuation value
                 mt_delta, opt_value = optimization(df_m, df_option_nxt)
@@ -338,8 +352,28 @@ def obtain_prices(prices, date):
     Returns:
     pd.DataFrame: DataFrame containing prices for the specified date.
     """
-    df_prices_aux = pd.DataFrame([])
-    for price in prices:
-        df_prices_aux = pd.concat([df_prices_aux, prices[price][[date]]], axis=1)
-    df_prices_aux.columns = list(prices.keys())
+    list_dfs = []
+    keys = []
+    reference_index = None
+
+    # Find a reference index from any DataFrame/Series in prices
+    for price, value in prices.items():
+        if isinstance(value, (pd.DataFrame, pd.Series)):
+            reference_index = value.index
+            break
+            
+    # Default to single row if no DataFrame found (fallback)
+    if reference_index is None:
+        reference_index = [0]
+
+    for price, value in prices.items():
+        keys.append(price)
+        if isinstance(value, (pd.DataFrame, pd.Series)):
+            list_dfs.append(value[[date]])
+        else:
+            # Handle constant/scalar value by broadcasting to reference index
+            list_dfs.append(pd.DataFrame(value, index=reference_index, columns=[date]))
+
+    df_prices_aux = pd.concat(list_dfs, axis=1)
+    df_prices_aux.columns = keys
     return df_prices_aux
