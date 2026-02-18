@@ -1,6 +1,15 @@
 __pycache__/
 .ipynb_checkpoints/
-*.npz
 *.pyc
 .DS_Store
 .env
+
+# Cached/generated data
+data/cache/
+*.npz
+
+# Results are regenerated from notebooks
+results/
+
+# Raw data (large CSVs, user-specific paths)
+data/raw/*.csv

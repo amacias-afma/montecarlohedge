@@ -4,7 +4,7 @@ import datetime as dt
 from scipy.stats import norm
 import pandas as pd
 
-import utils.g_functions as gf
+import src.g_functions as gf
 
 def margrabe_exchange_option_price(Sx, Sy, sigma_x, sigma_y, qx, qy, rho, r, T):
   """

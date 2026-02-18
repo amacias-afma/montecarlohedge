@@ -1,0 +1,6 @@
+# Core dependencies
+numpy
+pandas
+matplotlib
+scipy
+statsmodels
