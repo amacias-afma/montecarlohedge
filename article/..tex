@@ -1,0 +1,234 @@
+\documentclass[12pt,reqno]{article}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{float} 
+\usepackage{amsmath}
+\usepackage{booktabs,tabularx,color,colortbl}
+%\usepackage[table]{xcolor}
+\definecolor{Gray}{gray}{0.9}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{23cm}
+\setlength{\hoffset}{-2cm}
+\setlength{\voffset}{-2cm}
+
+
+\mathsurround=3pt
+\allowdisplaybreaks
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
+\numberwithin{equation}{section}
+
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0pt}{20pt}{6pt}{\large\bf}}
+\renewcommand{\@seccntformat}[1]{\csname the#1\endcsname.\ }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Definitions %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\np{\newpage}
+\def\ni{\noindent}
+\def\vs{\vspace}
+\def\hs{\hspace}
+
+\def\EE{\mathsf{E}}
+\def\PP{\mathsf P}
+\def\QQ{\mathsf Q}
+\def\FF{\mathsf F}
+\def\TT{\mathsf T}
+\def\cF{{\cal F}}
+\def\cD{{\cal D}}
+\def\R{I\!\!R}
+\def\C{I\!\!C}
+\def\L{I\!\!L}
+\def\wt{\widetilde}
+\def\wh{\widehat}
+\def\t{\tilde}
+\def\e{\text{e}}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\p}{\! +\! }
+\newcommand{\m}{\! -\! }
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{coroll}[theorem]{Corollary}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{example}[theorem]{Example}
+%%%%   Remember to set contents of both Definition and
+%%%%   Remark to roman type (\rm).
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{ass}[theorem]{Assumption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Title & Author(s) %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Investments in Bitcoin Mining Farms:\\
+Hedged Monte-Carlo Method}
+\author{ Y. Kitapbayev, F. Macias, A. Alqubaisi, M. Lopez de Prado, A. Lipton, J.P. Zubelli}
+\date{}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+    This paper studies the problem of optimal investment in a Bitcoin mining farm based on the real options framework. In particular, we apply the Hedged Monte Carlo (HMC) approach.
+\end{abstract}
+
+\section{Introduction}
+
+
+The mushrooming of bitcoin farming throughout the world raises a number of very relevant strategic questions in real options.
+For example, the Phoenix group established a joint venture with the Abu Dhabi government and has established a \$ 2 billion crypto mining farm on Reem Island, one of the largest and most innovative crypto currency mining facilities in the world.
+
+The main goal of this paper is to analyze the strategic value of the optionality of investing in a bitcoin farming in the framework of real-option analysis and investment under uncertainty. 
+
+
+\section{Problem Formulation}
+
+\subsection{Mining Plant}
+
+Consider the following horizon investment problem $[0,T]$: the mining company seeks to find the optimal time to build a farm that requires the sunk cost $K>0$ and has a lifetime period of $T'$. We assume that if the company invests in time $\tau\le T$, it will operate the mining farm until $\tau+T'$.
+
+\begin{tikzpicture}
+
+    % Draw the main timeline
+    \draw[->] (0,0) -- (10,0);
+
+    % Draw the points
+    \fill (0,0) circle (2pt) node[below] {$0$};
+    \fill (4,0) circle (2pt) node[below] {$\tau$};
+    \fill (8,0) circle (2pt) node[below] {$T'$+$\tau$};
+    \fill (9,0) circle (2pt) node[below] {$T$};
+    % Highlight the part from tau to before T
+    \draw[thick, red] (4,0) -- (8,0);
+
+    % Optional: Add a brace above the highlighted part
+    \draw [decorate,decoration={brace,amplitude=10pt,mirror}] (4,0.2) -- (8,0.2) node[midway, yshift=0.4cm] {Project Lifetime};
+
+\end{tikzpicture}
+
+
+
+
+\subsection{Simulator and Present Value of Cash Flows}
+
+
+Let us assume that $X_t$ is the price of 1 BTC in USD and $Y_t$ is the electricity price in USD/MWh at time $t\ge 0$. We also suppose that there is a simulator (e.g., using resampling) that can generate values of $X$ and $Y$ under the real-world measure $\mathbb{P}$, and there is a discount factor rate $\rho$. Here, the discount rate $\rho$ does not need to be the risk-free interest rate, as we are working with the historical measure and not the risk-neutral one.
+
+In the following, we describe the economics of the project with a variable electricity tariff.
+Let us assume that we invest at time $\tau$ in the bitcoin mining farm. In this case, the net present value of the project at time $\tau$ is given by
+\begin{align}
+    G(x,y)=\mathbb{E}_{x,y}\left[\int_\tau^{\tau+T'}e^{-\rho(t-\tau)}( (X_t-\kappa Y_t)^+-k)dt\right]-K
+\end{align}
+where $\mathbb{E}_{x,y}[]$ is the expected value under $\mathbb{P}$ given that $x$ is the value of $X$ at time $\tau$, $y>0$ is the value of $Y$ at time $\tau$. In addition, $\kappa$ is a conversion factor that shows how much electricity is needed to mine 1 BTC per year,  $k>0$ is the additional fixed cost to run the farm (e.g. wages, maintenance costs), $T'>0$ is the lifetime of the farm, $K>0$ is the sunk cost to build the farm. We suppose that the firm has the option to temporarily switch to an idle state at any time and then switch back to an operating state. Switching costs are assumed to be zero, hence the optimal strategy is to run is to mine bitcoin (to remain idle) when $X_t-\kappa Y_t >(<)0$. Therefore, a random cash flow at time $t$ is given by $(X_t-\kappa Y_t)^+:=\max(X_t-\kappa Y_t,0)$. The fixed cost $k$ occurs in any case.
+
+We note that if the simulator of $X_{\tau+h}$ and $Y_{\tau+h}$ given current values $X_\tau=x$ and $Y_\tau=y$ is independent of $\tau$, then the NPV function $G$ depends only on $x$ and $y$. 
+The NPV can be estimated using the MC method.
+\begin{equation}
+G(x,y)\approx\frac{h}{N}\sum_{n=1}^N \sum_{i=1}^J e^{-\rho t_i}\left( \left(X^{(n)}_{t_i}-\kappa Y^{(n)}_{t_i}\right)^+-k\right)-K
+\end{equation}
+where $N$ is the number of simulations, the time interval $[0,T']$ is discretized as $t_0<t_1<\ldots<t_J=T'$ with $h=t_i-t_{i-1}=T'/J$, and $X^{(n)}_{t_i}$ and $ Y^{(n)}_{t_i}$ are the simulated values of $X$ and $Y$ at time $t_i$ for simulation $n\in \{1,\ldots,N\}$. Hence, the computation of $G$ for given $x$ and $y$ requires simulating the trajectories of $N$ and is time-consuming.
+
+\subsection{Real option problem}
+
+Now we turn to the optimal investment problem that is formulated as the optimal stopping problem.
+\begin{equation}
+    V={\mathrm{ess}}\sup_{0\le \tau\le T} \mathbb{E}\left[e^{-\rho\tau}G(X_\tau,Y_\tau)\right]
+\end{equation}
+for $x,y>0$, where the (essential) supremum is taken over all stopping times $\tau$ with values in $[0,T]$ adapted to the flow of information. For this, we use the hedged Monte Carlo (HMC) method applied for American-style options \cite{Bouchaud,JPZ}. First, we discretize the investment horizon $[0,T]$ using equidistant intervals $L$, i.e. $\Delta=T/L$ with $t_j=j \Delta$, $j=0,1,\ldots,L$. Then, we define the terminal condition for $V$ and then employ backward induction. 
+
+First, we simulate $M$ trajectories of $X$ and $Y$ on the time grid above and then assume the following.
+\begin{equation}
+    V(L,m)=G(X^{(m)}_T,Y^{(m)}_{T})
+\end{equation}
+for $m=1,\ldots,M$. At time $t_j$, the continuation value can be estimated. 
+\begin{equation}
+    CV(j,x,y)=\sum_{a=1}^B \gamma_a^j C_a(x,y)
+\end{equation}
+where $C_a(x,y)$ are basis functions and where the coefficients $(\gamma_a^j)$ are determined by minimizing
+\begin{align}
+\sum_{m=1}^{M}\Big(&e^{-\rho \Delta} V\left(j+1,X_{t_j+\Delta}^{(m)},Y_{t_j+\Delta}^{(m)}\right)-\sum_{a=1}^B \gamma_a^j C_a\left(X_{t_j}^{(m)},Y_{t_j}^{(m)}\right)\\
+&+\sum_{a=1}^B \beta_a^j \frac{\partial C_a}{\partial x}\left(X_{t_j}^{(m)},Y_{t_j}^{(m)}\right)\left[X_{t_j}^{(m)}-e^{-\rho\Delta} (X_{t_j+\Delta}^{(m)}+DIV)\right]\Big)^2
+\end{align}
+The project value is then given by
+\begin{equation}
+    V(j,m)=\max(CV(j,X_{t_j}^{(m)},Y_{t_j}^{(m)}),G(X_{t_j}^{(m)},Y_{t_j}^{(m)}))
+\end{equation}
+for $m=1,\ldots,M$, allowing for early investment at time $t_j$.
+
+
+
+\appendix
+\section{Bitcoin Mining: Process, Time to Results, and Numerical Example}
+
+{\bf Attention, this appendix is from ChatGPT and every single word has to be double-checked and revised!}
+
+Bitcoin mining - sometimes colloquially referred to as ``farming'' - is the decentralized process by which new bitcoins are issued and transactions are confirmed on the blockchain. It relies on the \textbf{Proof-of-Work (PoW)} consensus mechanism, in which miners aggregate pending transactions into a candidate block and compete to solve a computationally difficult cryptographic puzzle: finding a block hash below a network-defined target value. This requires significant computational resources, typically provided by \textbf{Application-Specific Integrated Circuits (ASICs)}, and substantial electricity consumption \cite{narayanan2016bitcoin}.
+
+The first miner to solve the puzzle broadcasts the block for validation and, upon acceptance by the network, receives a block reward, which includes newly minted bitcoins (currently 3.125~BTC as of the 2024 halving) plus transaction fees \cite{nakamoto2008bitcoin,antonopoulos2017mastering}. The network difficulty adjusts every 2016 blocks (about two weeks) to maintain an average block interval of ten minutes, ensuring controlled issuance. Rewards are halved roughly every four years, contributing to Bitcoin’s capped supply of 21~million coins.
+
+\subsection{Time to First Results}
+In terms of \emph{time-to-first-reward}, a mining farm can start producing results as soon as it successfully mines or contributes to the mining of a block:
+\begin{itemize}
+    \item For farms participating in a \textbf{mining pool}, payouts can start within hours or days after activation, depending on the payout schedule of the pool and the farm's hash rate.
+    \item For farms mining \textbf{solo}, the time to mine the first block can range from days to many months, depending on hardware capacity and network difficulty: small-scale solo miners may experience extremely long intervals before generating any reward \cite{antonopoulos2017mastering}.
+\end{itemize}
+
+\subsection{Numerical Example}
+
+\paragraph{Assumptions (as of August 9, 2025):}
+\begin{itemize}
+    \item Network hash rate: $\approx 965~\mathrm{EH/s}$ \cite{btcnetwork2025}.
+    \item Block reward: $3.125~\mathrm{BTC}$ (post-April 20, 2024 halving) \cite{btcblockreward2024}.
+    \item Blocks per day: $\approx 144$ (10-minute target).
+    \item Example farm: $20~\mathrm{PH/s}$ (about $100 \times$ Bitmain Antminer S21 @ $195\!-\!200~\mathrm{TH/s}$ each) \cite{bitmainS21}.
+\end{itemize}
+
+\paragraph{Calculations:}
+Share of global hash rate:
+\[
+\frac{20~\mathrm{PH/s}}{965~\mathrm{EH/s}}
+= \frac{20{,}000~\mathrm{TH/s}}{965{,}000{,}000~\mathrm{TH/s}}
+\approx 2.07\times 10^{-5} \quad (\text{about } 0.00207\%).
+\]
+
+Expected blocks per day:
+\[
+144 \times 2.07\times 10^{-5} \approx 0.00298~\mathrm{blocks/day},
+\]
+which means one block on average every $\approx 335$~days (mean of an exponential process).
+
+Median time-to-first block (solo mining):
+\[
+\frac{\ln(2)}{0.00298} \approx 232~\text{days}.
+\]
+
+Expected BTC/day (in a pool, ignoring fees/variance):
+\[
+0.00298 \times 3.125 \approx 0.00933~\mathrm{BTC/day},
+\]
+or about $1~\mathrm{BTC}$ every $\approx 107$ days in expectation.
+
+\paragraph{Interpretation:}
+\begin{itemize}
+    \item \textbf{In a pool (PPS/FPPS):} first payouts typically occur within 24–72 hours after activation, subject to the pool’s payout schedule and minimum.
+    \item \textbf{Solo mining:} median wait to first block is about 232 days at $20~\mathrm{PH/s}$, with high variance; average wait $\approx 335$ days.
+\end{itemize}
+
+\paragraph{Conclusion:}
+Mining profitability and payout timing are heavily dependent on hash rate, network difficulty, hardware efficiency, and electricity cost. Although pools can deliver consistent early payouts, solo mining carries significant variance in time-to-first-result.
+
+
+
+\bibliographystyle{plain}
+\bibliography{bitcoin_refs,bibli}
+
+
+\end{document}
