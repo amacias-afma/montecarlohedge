@@ -9,7 +9,7 @@ data/cache/
 *.npz
 
 # Results are regenerated from notebooks
-results/
+# results/
 
 # Raw data (large CSVs, user-specific paths)
 data/raw/*.csv
