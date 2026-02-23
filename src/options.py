@@ -128,20 +128,10 @@ def base_bs(df_prices, df_return, delta_t, r, kappa, basis_type=None):
   """
   df_return_aux = np.log(1 + df_return / df_prices)
 
-  # print('df_prices')
-  # print(df_prices.head())
-  # print('df_return')
-  # print(df_return.head())
   df_ret_std = df_return_aux.std()
   df_ret_cor = df_return_aux.corr()
   df_ret_mean = df_return_aux.mean()
-  # print('-' * 10)
-  # print(df_ret_std)
-  # print(df_ret_cor)
-  # print(df_ret_mean)
-  # print('-' * 10)
   df_mean = df_prices.mean()
-  # print(df_mean)
 
   assets = {}
   for i, asset in enumerate(df_prices.columns):
@@ -215,12 +205,17 @@ def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
       df_base[f'dl_option_{asset}'] *= df_return[asset]
   elif basis_type['option_basis'] == 'margrabe':
     corr = df_ret_cor[assets[0]][assets[1]]
-    kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
+    # kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
+    kappa_aux = kappa
     delta_x, delta_y = margrabe_exchange_option_delta(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], \
                                                                    df_ret_std[assets[0]], kappa_aux * df_ret_std[assets[1]], \
                                                                    df_ret_mean[assets[0]], df_ret_mean[assets[1]], \
                                                                    corr, r, delta_t)
     df_base[f'dl_option_{assets[0]}'] = delta_x * df_return[assets[0]]
+    print('-------delta_y-----------------')
+    print(delta_y)
+    print('-------df_return[assets[1]]-----------------')
+    print(df_return[assets[1]])
     df_base[f'dl_option_{assets[1]}'] = delta_y * df_return[assets[1]]
 
   return df_base
@@ -243,7 +238,49 @@ def optimization(df_m, df_c):
   opt_value = mt_res_aux.T @ mt_res_aux
   return mt_delta, opt_value
 
-def calculate_real_option(prices, hedge_prices, basis_type, dates_project_window, dates_parameters, investment_parameters, others_parameters, g_alpha):
+def calculate_dates_project_window(other_parameters):
+  # --- Extract Parameters ---
+  valuation_date = other_parameters['valuation_date']
+  optionality_window_days = other_parameters['optionality_window']
+  start_days = other_parameters['starting_valuation_window']
+
+  # --- Calculate Monthly Dates ---
+  dates_project_window = []
+  days_in_month = (365*4 + 1) / 48  # Average month length (~30.416 days)
+
+  current_day_offset = start_days
+  end_day_offset = start_days + optionality_window_days
+
+  # Generate dates from start to end of the optionality window
+  while current_day_offset <= end_day_offset + 1:
+      # Calculate specific date
+      date = valuation_date + dt.timedelta(days=int(current_day_offset))
+      dates_project_window.append(date)
+      # Increment by one month
+      current_day_offset += days_in_month
+  return dates_project_window
+
+def calculate_mean_prices(prices, dates_project_window):
+  mean_prices = {}
+  dates_columns = prices['btc'].columns
+
+  for asset, prices_aux in prices.items():
+    if isinstance(prices_aux, (pd.DataFrame, pd.Series)):
+        mean_prices[asset] = pd.DataFrame([], \
+            index=prices_aux.index, columns=dates_project_window)
+        date_prev = dates_project_window[0]
+
+        for date in dates_project_window[1:]:
+            dates_aux = dates_columns[(dates_columns >= date_prev) & (dates_columns < date)]
+
+            mean_prices[asset][date_prev] = prices_aux[dates_aux].mean(axis=1)
+            date_prev = date
+
+        mean_prices[asset].drop(columns=date, inplace=True)
+  return mean_prices
+
+
+def calculate_real_option(prices, basis_type, investment_parameters, other_parameters, g_alpha):
     """
     Calculates the real option value using the Least Squares Monte Carlo (LSM) method.
 
@@ -253,16 +290,25 @@ def calculate_real_option(prices, hedge_prices, basis_type, dates_project_window
     dates_project_window (list): List of dates in the project window.
     dates_parameters (dict): Date parameters.
     investment_parameters (dict): Investment parameters.
-    others_parameters (dict): Other parameters.
+    other_parameters (dict): Other parameters.
 
     Returns:
     tuple: (df_option_value, df_call_value, df_intrinsic_value, df_delta, functional_result)
     """
     kappa = investment_parameters['kappa']
-    rho = others_parameters['rho']
-    delta_time = others_parameters['delta_time']
-    valuation_date = dates_parameters['valuation_date']
-    starting_day = dates_parameters['starting_day']
+    rho = other_parameters['rho']
+    delta_time = 1 / 12
+    # delta_time = other_parameters['delta_time']
+    valuation_date = other_parameters['valuation_date']
+    starting_day = other_parameters['starting_valuation_window']
+
+    dates_project_window = calculate_dates_project_window(other_parameters) # Calculate the dates for the project window
+    mean_prices = calculate_mean_prices(prices, dates_project_window) # Calculate the mean prices for the project window
+    print('--------------------')
+    print(dates_project_window)
+    dates_project_window = dates_project_window[:-1]
+    print(dates_project_window)
+    print('--------------------')
 
     df_project_value = pd.DataFrame([], columns=dates_project_window)
     df_option_value = pd.DataFrame([], columns=dates_project_window)
@@ -276,11 +322,20 @@ def calculate_real_option(prices, hedge_prices, basis_type, dates_project_window
     date_start = dates_project_window[0]
 
     functional_result = {}
+    prices_g = {}
+    prices_g['hashprice'] = prices['hashprice']
+    prices_g['electricity'] = prices['electricity']
+
+    hedge_prices = {'btc': mean_prices['btc']}
+    
+    if 'electricity' in mean_prices:
+        hedge_prices['electricity'] = mean_prices['electricity']
+
     for date in reversed(dates_project_window):
         # print(end_date, date, date_nxt)
         # 1. Calculate the project value (NPV - K) and intrinsic value for the current date
         print('date', date)
-        df_prices_g = obtain_prices(prices, date)
+        df_prices_g = obtain_prices(prices_g, date)
         df_project_value[date] = gf.calculate_g_tilde(df_prices_g, kappa, g_alpha)
 
         df_intrinsic_value[date] = df_project_value[date].copy()
@@ -293,7 +348,7 @@ def calculate_real_option(prices, hedge_prices, basis_type, dates_project_window
             df_prices_nxt = obtain_prices(hedge_prices, date)
 
         # 3. For all other dates, calculate the continuation value
-        else :
+        else:
             df_prices = obtain_prices(hedge_prices, date)
             discount_factor = np.exp(-rho * delta_time)
             df_return = df_prices_nxt * discount_factor - df_prices

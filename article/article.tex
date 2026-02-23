@@ -128,6 +128,25 @@ These ideas extend to energy, where robust, risk-aware valuation and management 
 
 We formalize the investment decision faced by a company considering the establishment of a Bitcoin mining farm.
 
+\subsection{Monthly Economic Baseline}
+We assume a project location in West Texas with an industrial electricity rate of \$\BaseElecPrice/kWh. The facility faces fixed monthly operational expenditures (OpEx) of \textbf{\$\BaseMonthlyOpEx}, covering rent, labor, insurance, and maintenance.
+
+Under current market conditions (Hashprice $\approx$ \$45/PH/day), the farm generates a monthly revenue of \textbf{\$\BaseMonthlyRevenue}. After deducting electricity costs of \$\BaseMonthlyElec{} and fixed OpEx, the net monthly profit is \textbf{\$\BaseMonthlyProfit}.
+
+This results in a static payback period of \textbf{\BasePaybackMonths{} months} (\BasePaybackYears{} years).
+
+\subsection{Optimal Exit Analysis}
+To assess the impact of asset liquidity, we calculate the Net Present Value (NPV) of the project assuming a variable exit time $T$. This includes the discounted cash flows from operations up to month $T$ and the resale value of the hardware and infrastructure at that time. We assume a monthly depreciation rate of \SalvageDeprRate{} for the mining hardware.
+
+As shown in Figure \ref{fig:pv_exit_curve}, the project value is maximized if the investor plans to exit at \textbf{Month \OptimalExitMonth}, yielding a total NPV of \textbf{\$\MaxProjectPV}. This "concave" profile highlights the trade-off between accumulating operational profits and the rapid depreciation of ASIC hardware.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/pv_exit_curve.pdf}
+    \caption{Project NPV as a function of the stopping time $T$, including asset resale value.}
+    \label{fig:pv_exit_curve}
+\end{figure}
+
 \subsection{Investment Setup}
 
 Consider an investment horizon $[0,T]$. The company has the option to build a mining farm, requiring a fixed, irreversible sunk cost $K>0$. If the company invests at time $\tau \in [0,T]$, the farm begins operations immediately and has a fixed operational lifetime $T'$. Consequently, the farm operates during the interval $[\tau, \tau+T']$.

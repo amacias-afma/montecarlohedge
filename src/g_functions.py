@@ -3,15 +3,14 @@ import numpy as np
 import datetime as dt
 import pandas as pd
 
-def estimate_g_alpha(prices, dates_parameters, investment_parameters, others_parameters):
+def estimate_g_alpha(prices, investment_parameters, other_parameters, n_simulations=1000):
     """
     Estimates the alpha coefficients for the g function using a Monte Carlo approach.
 
     Parameters:
     prices (dict): Dictionary containing 'X' (Hashprice) and 'Y' (Electricity) price DataFrames.
-    dates_parameters (dict): Dictionary containing date-related parameters.
     investment_parameters (dict): Dictionary containing investment parameters (kappa, k, K).
-    others_parameters (dict): Dictionary containing other parameters (rho, delta_time).
+    other_parameters (dict): Dictionary containing other parameters (rho, delta_time).
 
     Returns:
     numpy.matrix: A matrix containing the estimated alpha coefficients.
@@ -20,27 +19,36 @@ def estimate_g_alpha(prices, dates_parameters, investment_parameters, others_par
     b = []
     A = []
     kappa = investment_parameters['kappa']
-    valuation_date = dates_parameters['valuation_date']
-    n_days_forecast = dates_parameters['n_days_forecast']
-    project_duration = dates_parameters['project_duration']
+    valuation_date = other_parameters['valuation_date']
+    n_days_forecast = other_parameters['n_days_forecast']
+    project_duration = other_parameters['project_duration']
+    
     list_dates = [valuation_date + dt.timedelta(days=i) for i in range(n_days_forecast + 1 - project_duration)]
 
-    for _ in range(1000):
-        i = random.choice(range(len(prices['Z'])))
+    for _ in range(n_simulations):
+        i = random.choice(range(len(prices['hashprice'])))
         date = random.choice(list_dates)
-        x0 = prices['Z'].loc[i][date]
-        if isinstance(prices['Y'], (pd.DataFrame, pd.Series)):
-            y0 = prices['Y'].loc[i][date]
-        else:
-            y0 = prices['Y']
 
-        g0 = calculate_g_montecarlo(x0, y0, date, prices, dates_parameters, investment_parameters, others_parameters)
+        x0 = prices['hashprice'].loc[i][date]
+
+        if isinstance(prices['electricity'], (pd.DataFrame, pd.Series)):
+            y0 = prices['electricity'].loc[i][date]
+        else:
+            y0 = prices['electricity']
+
+        g0 = calculate_g_montecarlo(x0, y0, date, prices, investment_parameters, other_parameters)
         v0 = x0 - kappa * y0
         b.append(g0)
         A.append([1, v0, v0**2, v0**3])
 
     mt_A = np.matrix(A)
+    # print('mt_A', mt_A.shape)
+    # print(mt_A)
+    
     mt_b = np.matrix(b).T
+    # print('mt_b', mt_b.shape)
+    # print(mt_b)
+
     mt_A_inv = np.linalg.inv(mt_A.T @ mt_A)
     mt_alpha = mt_A_inv @ (mt_A.T @ mt_b)
     return mt_alpha
@@ -57,11 +65,12 @@ def calculate_g_tilde(df_prices, kappa, g_alpha):
     Returns:
     float: The calculated g_tilde value.
     """
-    v = df_prices['Z'] - kappa * df_prices['Y']
+    v = df_prices['hashprice'] - kappa * df_prices['electricity']
+    # print(v.mean(), df_prices['hashprice'].mean(), df_prices['electricity'].mean(), kappa)
     return g_alpha[0].item() + g_alpha[1].item() * v + g_alpha[2].item() * v**2 + g_alpha[3].item() * v**3
 
 
-def calculate_g_montecarlo(x0, y0, date, prices, dates_parameters, investment_parameters, others_parameters):
+def calculate_g_montecarlo(x0, y0, date, prices, investment_parameters, other_parameters):
     """
     Performs a Monte Carlo simulation to estimate the g value for a specific state.
 
@@ -70,9 +79,8 @@ def calculate_g_montecarlo(x0, y0, date, prices, dates_parameters, investment_pa
     y0 (float): Initial Electricity price.
     date (datetime): Current date.
     prices (dict): Dictionary containing price DataFrames.
-    dates_parameters (dict): Date parameters.
     investment_parameters (dict): Investment parameters.
-    others_parameters (dict): Other parameters.
+    other_parameters (dict): Other parameters.
 
     Returns:
     float: The estimated g value (NPV - K).
@@ -82,19 +90,18 @@ def calculate_g_montecarlo(x0, y0, date, prices, dates_parameters, investment_pa
     k = investment_parameters['k']
     K = investment_parameters['K']
 
-    rho = others_parameters['rho']
-    delta_time = others_parameters['delta_time']
-    project_duration = dates_parameters['project_duration']
+    rho = other_parameters['rho']
+    delta_time = other_parameters['delta_time']
+    project_duration = other_parameters['project_duration']
 
     g_value = 0
 
     for i_aux in range(1, project_duration + 1):
         end_date = date + dt.timedelta(days=i_aux)
-        # print(prices['X'][end_date])
-        delta_x = prices['Z'][end_date] - prices['Z'][date]
+        delta_x = prices['hashprice'][end_date] - prices['hashprice'][date]
         
-        if isinstance(prices['Y'], (pd.DataFrame, pd.Series)):
-             delta_y = prices['Y'][end_date] - prices['Y'][date]
+        if isinstance(prices['electricity'], (pd.DataFrame, pd.Series)):
+             delta_y = prices['electricity'][end_date] - prices['electricity'][date]
         else:
              delta_y = 0
 
