@@ -1,0 +1,63 @@
+\begin{thebibliography}{7}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Antonopoulos(2017)]{antonopoulos2017mastering}
+Andreas~M. Antonopoulos.
+\newblock \emph{Mastering Bitcoin: Programming the Open Blockchain}.
+\newblock O'Reilly Media, 2 edition, 2017.
+\newblock ISBN 978-1491954386.
+
+\bibitem[Brigatti et~al.(2015)Brigatti, Mac{\'\i}as, Souza, and
+  Zubelli]{BrigattiMaciasSouzaZubelli2015FIC}
+Edgardo Brigatti, Felipe Mac{\'\i}as, Max~O. Souza, and Jorge~P. Zubelli.
+\newblock A hedged monte carlo approach to real option pricing.
+\newblock In Ren{\'e} A{\"i}d, Michael Ludkovski, and Ronnie Sircar, editors,
+  \emph{Commodities, Energy and Environmental Finance}, volume~74 of
+  \emph{Fields Institute Communications}, pages 275--299. Springer, New York,
+  NY, 2015.
+\newblock \doi{10.1007/978-1-4939-2733-3_10}.
+
+\bibitem[Guigues et~al.(2014)Guigues, Sagastiz{\'a}bal, and
+  Zubelli]{GuiguesSagastizabalZubelli2014JOTA}
+Vincent Guigues, Claudia Sagastiz{\'a}bal, and Jorge~P. Zubelli.
+\newblock Robust management and pricing of liquefied natural gas contracts with
+  cancelation options.
+\newblock \emph{Journal of Optimization Theory and Applications}, 161\penalty0
+  (1):\penalty0 179--198, 2014.
+\newblock \doi{10.1007/s10957-013-0309-5}.
+
+\bibitem[Jaimungal et~al.(2013)Jaimungal, de~Souza, and
+  Zubelli]{JaimungalSouzaZubelli2013EJF}
+Sebastian Jaimungal, Max~O. de~Souza, and Jorge~P. Zubelli.
+\newblock Real option pricing with mean-reverting investment and project value.
+\newblock \emph{The European Journal of Finance}, 19\penalty0 (7-8):\penalty0
+  625--644, 2013.
+\newblock \doi{10.1080/1351847X.2011.601660}.
+
+\bibitem[Nakamoto(2008)]{nakamoto2008bitcoin}
+Satoshi Nakamoto.
+\newblock Bitcoin: A peer-to-peer electronic cash system.
+\newblock \url{https://bitcoin.org/bitcoin.pdf}, 2008.
+
+\bibitem[Narayanan et~al.(2016)Narayanan, Bonneau, Felten, Miller, and
+  Goldfeder]{narayanan2016bitcoin}
+Arvind Narayanan, Joseph Bonneau, Edward Felten, Andrew Miller, and Steven
+  Goldfeder.
+\newblock \emph{Bitcoin and Cryptocurrency Technologies: A Comprehensive
+  Introduction}.
+\newblock Princeton University Press, 2016.
+\newblock ISBN 978-0691171692.
+
+\bibitem[Souza and Zubelli(2011)]{SouzaZubelli2011ASMBI}
+Max~O. Souza and Jorge~P. Zubelli.
+\newblock Strategic investment decisions under fast mean-reversion stochastic
+  volatility.
+\newblock \emph{Applied Stochastic Models in Business and Industry},
+  27\penalty0 (1):\penalty0 61--69, 2011.
+\newblock \doi{10.1002/asmb.833}.
+
+\end{thebibliography}

@@ -1,7 +1,8 @@
+% !TEX root = article.tex
 \documentclass[12pt,reqno]{article}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{amsthm}
-\usepackage{natbib}
+\usepackage[numbers]{natbib}
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{tikz}
@@ -10,6 +11,14 @@
 \usepackage{booktabs,tabularx}
 \usepackage{hyperref} % Added for better navigation and citation linking
 \usepackage{geometry} % For flexible page layout
+
+% --- Auto-Generated Variables ---
+\input{results/tables/basic_economics_macros.tex}
+\input{results/tables/hybrid_economics_macros.tex}
+\input{results/tables/static_exit_analysis_macros.tex}
+\input{results/tables/ro_results_fixed_macros.tex}
+\input{results/tables/simulation_setup_macros.tex}
+\input{results/tables/revenue_calibration_macros.tex}
 
 % Set page geometry
 \geometry{a4paper, margin=1in}
@@ -116,6 +125,7 @@ When both the project value and the investment cost are mean-reverting, the opti
 \paragraph{Hedged Monte Carlo in incomplete markets.}
 For settings driven by historical/simulation scenarios—common in commodities—Zubelli and coauthors propose a hedged Monte Carlo approach that prices the real option jointly with a dynamically learned hedge \citep{BrigattiMaciasSouzaZubelli2015FIC}.
 
+
 \paragraph{Energy application: LNG contracts.}
 These ideas extend to energy, where robust, risk-aware valuation and management of LNG contracts with cancellation options are formulated and solved within an optimization framework \citep{GuiguesSagastizabalZubelli2014JOTA}.
 
@@ -142,7 +152,7 @@ As shown in Figure \ref{fig:pv_exit_curve}, the project value is maximized if th
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/pv_exit_curve.pdf}
+    \includegraphics[width=0.8\textwidth]{results/figures/pv_exit_curve.pdf}
     \caption{Project NPV as a function of the stopping time $T$, including asset resale value.}
     \label{fig:pv_exit_curve}
 \end{figure}
@@ -261,33 +271,34 @@ This process is repeated backwards until $t_0$, yielding the value of the invest
 
 \section{Numerical Implementation and Case Study}
 
+\subsection{Strategic Baseline: The Hybrid Hosting Model}
+To evaluate the investment, we adopt a ``Hybrid'' or ``Colocation'' investment strategy, which represents the most common and practical entry point for mid-scale mining operations today. In this model, the investor retains ownership of the mining hardware (capital expenditure) but outsources the infrastructure and energy procurement (operational expenditure).
 
-% [Placeholder: This section is crucial and must be developed by the authors.]
+\begin{itemize}
+    \item \textbf{Capital Investment:} The firm purchases the mining hardware at an adjusted secondary-market price of \$\HybridMinerPrice/unit. For our base case of 350 units, the initial sunk cost ($K$) totals \textbf{\$\HybridCapex}. This structure avoids the high interest premiums associated with full hardware leasing.
+    \item \textbf{Operational Structure:} The hardware is deployed in a third-party hosting facility at an all-inclusive rate of \$\HybridHostingRate/kWh. This rate removes the need for capital investment in transformers, land development, and maintenance staff. The facility's total daily energy conversion factor ($\kappa$) is calculated as \textbf{\Kappa{} kWh/day}.
+\end{itemize}
 
-% \subsection{Stochastic Models and Calibration}
-% [Specify the SDEs used for X_t (BTC) and Y_t (Electricity). Justify the choice of models (e.g., GBM, Mean-Reversion, Jumps) and describe the calibration process using historical data.]
+Assuming current market conditions remain completely static (deterministic), the project generates a positive monthly net profit of \textbf{\$\HybridMonthlyProfit}. This static scenario results in a traditional payback period of \textbf{\HybridPayback{} years}. 
 
-% \subsection{Case Study Parameters}
-% [Define the base case parameters: K (Sunk Cost), T (Horizon), T' (Lifetime), kappa (Efficiency), k (Fixed Costs), rho (WACC).]
+\subsection{Deterministic Project Value and Optimal Exit}
+Before applying stochastic volatility, we establish a strict deterministic floor by calculating the optimal exit timing. This analysis evaluates the Net Present Value (NPV) of the project assuming a variable stopping time $T$. The NPV incorporates both the discounted operational cash flows up to month $T$ and the salvage value of the hardware, which we assume depreciates at an aggressive rate of \textbf{\SalvageDeprRate} per month.
 
-% \subsection{HMC Implementation Details}
-% [Specify the numerical parameters: L, J (Time steps); M, N (Simulation counts). Crucially, detail the choice of basis functions C_a(x,y) (e.g., Polynomials, Laguerre).]
-
-We assume that we will build a farm with 1,000 TH capacity. Suppose we install Bitcoin miner S12 pro machines, each of which has 234 TH at a price \$3,744, i.e., approximately four machines are required. Each machine operates with a nominal power of  3.51 KW. The electricity price $Y$ is in \$/KWh. Total energy per year required is $\kappa= \frac{1000}{234}\times3.51\times 24\times 365$ KWh. The energy cost per year is $\int_0^1 \kappa Y_t dt$.  Assuming the fixed electricity rate $Y_0= 0.05$ \$/KWh, it will be \$ 6,570. The investment cost for machines is  $K_1=\frac{1000}{234}\times 3,744$ \$, the infrastructure cost (cables, labor) $K_2=0.06\times K_1$ \$, the cost of containers $K_3=\frac{1000}{234}\times 100,000/210$ \$, $K_4$ is the cost of the rental of land. The total investment cost is $K=K_1+K_2+K_3+K_4$. The lifetime period of machines is  $T'= 3-4$ years.
-
-We work with the hashprice index $X$. Current value (as of 23 May 2025) is \$50 per 1 PH (or 1,000 TH) per day. Hence, if $X$ stays the same at this level, the annual revenue is $50\times 365=18,250$ \$.
+Assuming constant hashprices, the deterministic project value is maximized if the investor liquidates the operation at \textbf{Month \StaticExitMonth}, yielding a maximum theoretical NPV of \textbf{\$\StaticMaxPV}. This establishes the baseline value of the project ignoring all crypto-market volatility.
 
 \section{Results and Discussion}
-% [Placeholder: This section must present the findings.]
 
-% \subsection{Optimal Investment Boundary}
-% [Present the estimated option value V_0. Visualize the Optimal Investment Boundary in the (X, Y) space, which separates the "Wait" and "Invest" regions.]
+\subsection{Scenario 2: The "Hosting" Case (Stochastic Revenue)}
+In our first stochastic scenario, we isolate the value of \textit{Revenue Volatility}. Because the firm pays a fixed electricity hosting rate (\$\HybridHostingRate/kWh), energy price risk is eliminated. However, the project remains fully exposed to the extreme volatility of Bitcoin prices and Hashprice. 
 
-% \subsection{Sensitivity Analysis}
-% [Analyze the impact of key parameters (e.g., volatility of X and Y, correlation, discount rate rho) on the option value and the investment boundary.]
+Crucially, the firm possesses an operational \textit{Switching Option}: management can temporarily suspend mining operations if the Hashprice drops below the hosting break-even threshold, preventing negative cash flows, and resume operations when profitability returns.
 
-% \subsection{Comparison with LSM}
-% [To validate the HMC approach, compare the results (accuracy, variance, computational time) with the standard Least-Squares Monte Carlo (LSM) method.]
+We evaluate this flexibility using the Hedged Monte Carlo (HMC) algorithm. When evaluated purely intrinsically (forcing immediate exercise without the flexibility to wait or switch), the traditional NPV under simulated paths drops to \textbf{\$\FixedPowerNPV}. 
+
+However, when properly valuing the operational flexibility to weather "crypto winters" and capitalize on "bull markets", the Real Option Value rises significantly to \textbf{\$\FixedPowerROValue}. The difference between these two metrics yields an option premium of \textbf{\$\FixedPowerPremium}. 
+
+This result highlights a fundamental principle in highly volatile industries: traditional DCF and static NPV severely underprice assets because they fail to account for management's ability to asymmetricaly capture upside volatility while truncating downside risk through operational suspension.
+
 
 \section{Conclusion}
 
@@ -359,23 +370,9 @@ E[\text{Revenue}_{BTC}] = E[B_{Farm}] \times R = 0.00298 \times 3.125 \approx 0.
 For this hypothetical farm, solo mining presents high variance, with an average wait of 335 days to find a block. Pool mining provides a much more stable expected revenue stream.
 
 \bibliographystyle{plainnat} % Recommended style for natbib
-% \bibliography{bitcoin_refs,bibli}
+\bibliography{bitcoin_refs,bibli}
 
-% Placeholder References (Authors must ensure these are in their .bib files)
-\begin{thebibliography}{99}
+% Auto-generated bibliography from .bib files above
 
-\bibitem{antonopoulos2017mastering} Antonopoulos, A. M. (2017). \textit{Mastering Bitcoin: Programming the Open Blockchain}. O'Reilly Media, Inc.
-
-\bibitem{Bouchaud} Potters, M., Bouchaud, J.P., \& Sestovic, D. (2001). Hedged Monte Carlo: A variance reduction technique for American options. \textit{Wilmott Magazine}.
-
-\bibitem{LongstaffSchwartz2001} Longstaff, F. A., \& Schwartz, E. S. (2001). Valuing American Options by Simulation: A Simple Least-Squares Approach. \textit{The Review of Financial Studies}, 14(1), 113-147.
-
-\bibitem{nakamoto2008bitcoin} Nakamoto, S. (2008). Bitcoin: A Peer-to-Peer Electronic Cash System.
-
-\bibitem{narayanan2016bitcoin} Narayanan, A., et al. (2016). \textit{Bitcoin and Cryptocurrency Technologies: A Comprehensive Introduction}. Princeton University Press.
-
-\bibitem{JPZ} [Reference related to J.P. Zubelli's work on HMC if applicable].
-
-\end{thebibliography}
 
 \end{document}

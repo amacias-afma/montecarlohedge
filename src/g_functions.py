@@ -66,8 +66,11 @@ def calculate_g_tilde(df_prices, kappa, g_alpha):
     float: The calculated g_tilde value.
     """
     v = df_prices['hashprice'] - kappa * df_prices['electricity']
+    result = g_alpha[0].item()
+    for i in range(1, len(g_alpha)):
+        result += g_alpha[i].item() * (v**i)
     # print(v.mean(), df_prices['hashprice'].mean(), df_prices['electricity'].mean(), kappa)
-    return g_alpha[0].item() + g_alpha[1].item() * v + g_alpha[2].item() * v**2 + g_alpha[3].item() * v**3
+    return result
 
 
 def calculate_g_montecarlo(x0, y0, date, prices, investment_parameters, other_parameters):
@@ -108,6 +111,6 @@ def calculate_g_montecarlo(x0, y0, date, prices, investment_parameters, other_pa
         g_aux = x0 + delta_x - kappa * (y0 + delta_y)
         g_aux[g_aux < 0] = 0
         g_aux -= k
-        g_aux *= np.exp(-rho * i_aux * delta_time)
+        g_aux *= np.exp(-rho * i_aux * delta_time) * delta_time
         g_value += g_aux.mean()
     return float(g_value) - K
