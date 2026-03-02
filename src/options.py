@@ -203,20 +203,20 @@ def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
     for asset in df_prices.columns:
       df_base[f'dl_option_{asset}'] = blsdelta(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset] * np.sqrt(252))
       df_base[f'dl_option_{asset}'] *= df_return[asset]
-  elif basis_type['option_basis'] == 'margrabe':
-    corr = df_ret_cor[assets[0]][assets[1]]
-    # kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
-    kappa_aux = kappa
-    delta_x, delta_y = margrabe_exchange_option_delta(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], \
-                                                                   df_ret_std[assets[0]], kappa_aux * df_ret_std[assets[1]], \
-                                                                   df_ret_mean[assets[0]], df_ret_mean[assets[1]], \
-                                                                   corr, r, delta_t)
-    df_base[f'dl_option_{assets[0]}'] = delta_x * df_return[assets[0]]
-    print('-------delta_y-----------------')
-    print(delta_y)
-    print('-------df_return[assets[1]]-----------------')
-    print(df_return[assets[1]])
-    df_base[f'dl_option_{assets[1]}'] = delta_y * df_return[assets[1]]
+  # elif basis_type['option_basis'] == 'margrabe':
+  #   corr = df_ret_cor[assets[0]][assets[1]]
+  #   # kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
+  #   kappa_aux = kappa
+  #   delta_x, delta_y = margrabe_exchange_option_delta(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], \
+  #                                                                  df_ret_std[assets[0]], kappa_aux * df_ret_std[assets[1]], \
+  #                                                                  df_ret_mean[assets[0]], df_ret_mean[assets[1]], \
+  #                                                                  corr, r, delta_t)
+  #   df_base[f'dl_option_{assets[0]}'] = delta_x * df_return[assets[0]]
+  #   print('-------delta_y-----------------')
+  #   print(delta_y)
+  #   print('-------df_return[assets[1]]-----------------')
+  #   print(df_return[assets[1]])
+  #   df_base[f'dl_option_{assets[1]}'] = delta_y * df_return[assets[1]]
 
   return df_base
 
@@ -304,11 +304,11 @@ def calculate_real_option(prices, basis_type, investment_parameters, other_param
 
     dates_project_window = calculate_dates_project_window(other_parameters) # Calculate the dates for the project window
     mean_prices = calculate_mean_prices(prices, dates_project_window) # Calculate the mean prices for the project window
-    print('--------------------')
-    print(dates_project_window)
-    dates_project_window = dates_project_window[:-1]
-    print(dates_project_window)
-    print('--------------------')
+    # print('--------------------')
+    # print(dates_project_window)
+    # dates_project_window = dates_project_window[:-1]
+    # print(dates_project_window)
+    # print('--------------------')
 
     df_project_value = pd.DataFrame([], columns=dates_project_window)
     df_option_value = pd.DataFrame([], columns=dates_project_window)
@@ -326,10 +326,13 @@ def calculate_real_option(prices, basis_type, investment_parameters, other_param
     prices_g['hashprice'] = prices['hashprice']
     prices_g['electricity'] = prices['electricity']
 
-    hedge_prices = {'btc': mean_prices['btc']}
+    hedge_prices = {'btc': prices['hashprice']}
+    # hedge_prices = {'btc': mean_prices['btc']}
+
     
     if 'electricity' in mean_prices:
-        hedge_prices['electricity'] = mean_prices['electricity']
+        hedge_prices['electricity'] = prices['electricity']
+        # hedge_prices['electricity'] = mean_prices['electricity']
 
     for date in reversed(dates_project_window):
         # print(end_date, date, date_nxt)
@@ -374,8 +377,8 @@ def calculate_real_option(prices, basis_type, investment_parameters, other_param
                 df_k = base_bs(df_prices, df_return, delta_time, rho, kappa, basis_type).fillna(0)
                 df_h = base_bs_delta(df_prices, df_return, delta_time, rho, kappa, basis_type).fillna(0)
                 df_m = pd.concat((df_k, df_h), axis=1)
-                print(df_m.head())
-                print(df_m.corr())
+                # print(df_m.head())
+                # print(df_m.corr())
 
                 # Run regression to find coefficients (γ_a^j) and estimate continuation value
                 mt_delta, opt_value = optimization(df_m, df_option_nxt)

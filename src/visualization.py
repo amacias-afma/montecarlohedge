@@ -129,7 +129,7 @@ def plot_prices(df_train, assets_type='bitcoin'):
     fig.tight_layout()
     export_figure(fig, f"historical_{assets_type}_dual")
 
-def plot_project_value(possible_exits, pv_exit_curve, max_project_value, optimal_exit_month):
+def plot_project_value(possible_exits, pv_exit_curve, max_project_value, optimal_exit_month, saved_name):
     # 4. Visualization
     fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -149,4 +149,28 @@ def plot_project_value(possible_exits, pv_exit_curve, max_project_value, optimal
     ax.set_ylabel("Net Present Value ($)")
     ax.legend()
     ax.grid(True, alpha=0.3)
-    export_figure(fig, "pv_exit_curve_static")
+    export_figure(fig, saved_name)
+
+def plot_real_option(df_ro, df_int, title, export_name):
+    """
+    Visualizes the Mean Real Option Value vs. Mean Intrinsic Value over time.
+    """
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot Mean Option Value vs Mean Intrinsic Value over time
+    ax.plot(df_ro.mean(axis=0), label="Real Option Value (Stochastic Rev)", color='#003366', linewidth=2)
+    ax.plot(df_int.mean(axis=0), label="Intrinsic Value (NPV)", color='#D0021B', linestyle='--', linewidth=2)
+
+    ax.set_title(title, pad=15)
+    ax.set_ylabel("Project Value ($)")
+    ax.set_xlabel("Days into Forecast")
+    
+    # Format Y-axis with commas
+    ax.yaxis.set_major_formatter(mtick.StrMethodFormatter('{x:,.0f}'))
+    
+    ax.legend(loc='upper right')
+    ax.grid(True, alpha=0.3)
+    ax.margins(x=0)
+
+    export_figure(fig, export_name)
+    return fig, ax

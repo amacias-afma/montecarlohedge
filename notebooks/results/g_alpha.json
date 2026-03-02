@@ -1,0 +1,34 @@
+{
+    "parameters": {
+        "investment_parameters": {
+            "K": 875000,
+            "k": 0,
+            "kappa": 25284.0,
+            "hashrate": 49.0
+        },
+        "other_parameters": {
+            "valuation_date": "2023-01-01T00:00:00",
+            "optionality_window": 182,
+            "starting_valuation_window": 0,
+            "project_duration": 1826,
+            "rho": 0.05,
+            "projection_horizon": 2008,
+            "n_days_forecast": 2008,
+            "delta_time": 0.0027378507871321013
+        },
+        "g_simulations_train": 1000,
+        "g_simulations_test": 200,
+        "model_type": "hybrid_hosting"
+    },
+    "g_alpha": [
+        [
+            9.652029062200434
+        ],
+        [
+            0.03894747703449757
+        ],
+        [
+            2.814513606559235e-06
+        ]
+    ]
+}
