@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex article"] 1771818763.19058 "article.aux" "article.bbl" "article" 1771859876.97336 0
+["bibtex article"] 1772506246.64953 "article.aux" "article.bbl" "article" 1772506248.66669 0
   "./bibli.bib" 1771425184 14367 64d8d84a0627b59fb57218168473b529 ""
   "./bitcoin_refs.bib" 1771425184 1287 c97f952b9c5c2f31010eb30820627d1b ""
   "C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/bibtex/bst/natbib/plainnat.bst" 1284455456 26816 ffe5423d2019860bad9f54bc402fac15 ""
-  "article.aux" 1771859875 5630 2fc971909dac83ea96b43beb9256da3d "pdflatex"
+  "article.aux" 1772506247 7449 3b78bf3d17da95a958912fa8e49e6f8d "pdflatex"
   (generated)
   "article.bbl"
   "article.blg"
   (rewritten before read)
-["pdflatex"] 1771859871.20473 "c:/Users/fe_ma/Projects/MonteCarloHedge/article/article.tex" "article.pdf" "article" 1771859876.97391 0
+["pdflatex"] 1772506246.89066 "c:/Users/fe_ma/Projects/MonteCarloHedge/article/article.tex" "article.pdf" "article" 1772506248.66717 0
   "C:/Users/fe_ma/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1771817754 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/fe_ma/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcbx1200.pk" 1771817964 15080 27bbdf8672315d88139f682a916934a7 ""
   "C:/Users/fe_ma/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm0700.pk" 1771817966 8268 4fd8b456663c12016f6df4e24c23e9e7 ""
@@ -187,18 +187,19 @@
   "C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/tex/latex/tools/tabularx.sty" 1761901070 7243 a2c17f18e2c9b702b84fad03d5f9c78b ""
   "C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "article.aux" 1771859875 5630 2fc971909dac83ea96b43beb9256da3d "pdflatex"
-  "article.bbl" 1771818763 2773 992c6c8827e6893299979de89a4474e0 "bibtex article"
-  "article.out" 1771859875 4682 5d0489880bda4e0946dee83cc7fd4cd4 "pdflatex"
-  "article.tex" 1771859868 25822 252c35b6fa5a3db8aebf34a59e573880 ""
-  "c:/Users/fe_ma/Projects/MonteCarloHedge/article/article.tex" 1771859868 25822 252c35b6fa5a3db8aebf34a59e573880 ""
-  "results/figures/pv_exit_curve.pdf" 1771814901 27403 2cd41b8f372c587baceeaacf5e940057 ""
-  "results/tables/basic_economics_macros.tex" 1771818373 409 455f83795dab15eb8c6d62b7d2514360 ""
-  "results/tables/hybrid_economics_macros.tex" 1771818375 396 7aa81c19d086d088d0d6c234e60cc739 ""
-  "results/tables/revenue_calibration_macros.tex" 1771818385 200 45baf4aeeccaacc008e8c180dc872e62 ""
-  "results/tables/ro_results_fixed_macros.tex" 1771814976 219 f9a9c48b0b0c885738e0dcd251d62b83 ""
-  "results/tables/simulation_setup_macros.tex" 1771440325 281 96aa7f1f019ebf0f98755a20eef5da7e ""
-  "results/tables/static_exit_analysis_macros.tex" 1771814901 213 6e24ab6170834e8a11a864772b672972 ""
+  "article.aux" 1772506247 7449 3b78bf3d17da95a958912fa8e49e6f8d "pdflatex"
+  "article.bbl" 1772506246 2773 992c6c8827e6893299979de89a4474e0 "bibtex article"
+  "article.out" 1772506247 4598 e79adfa9f1c0a85310ebb9efee226cc5 "pdflatex"
+  "article.tex" 1772506173 31152 aa59158af2f73d2afb6cf510bf6d0ef8 ""
+  "c:/Users/fe_ma/Projects/MonteCarloHedge/article/article.tex" 1772506173 31152 aa59158af2f73d2afb6cf510bf6d0ef8 ""
+  "results/figures/historical_bitcoin_dual.pdf" 1772505984 36399 2f528b81ebd2b7a8df9024ace1e2da3a ""
+  "results/figures/sce1_pv_exit_curve_static.pdf" 1772505983 27403 bc41424cedf8011ee322f7d2a3710b70 ""
+  "results/figures/sce2_ro_value_fixed_cost.pdf" 1772494052 24726 597c5a2e18f8541aa26892fca553ec7f ""
+  "results/figures/sce2_simulated_revenue_paths.pdf" 1772505986 119333 9ae1c4d4aef1802137422bb87ee83330 ""
+  "results/tables/hybrid_economics_macros.tex" 1772487189 324 d78560d2143b6d7ae4dac3bc78b5b221 ""
+  "results/tables/sce1_static_exit_analysis_macros.tex" 1772505983 218 e773929e89c69f20d9466f89f3d13082 ""
+  "results/tables/sce2_ro_results_fixed_macros.tex" 1772494052 215 cbaaea7915029179d5bcce702b2a81a8 ""
+  "results/tables/sce3_ro_results_grid_macros.tex" 1772502825 239 6a1975f7279c66383beca63f2a7d2e41 ""
   (generated)
   "article.aux"
   "article.log"

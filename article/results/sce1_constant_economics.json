@@ -1,0 +1,8 @@
+{
+  "ConstantCapex": "875,000",
+  "ConstantMinerPrice": "2,500",
+  "ConstantHostingRate": "0.065",
+  "ConstantMonthlyProfit": "17,092",
+  "ConstantPayback": "4.3",
+  "Kappa": "25,284"
+}

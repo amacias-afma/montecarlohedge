@@ -13,12 +13,17 @@
 \usepackage{geometry} % For flexible page layout
 
 % --- Auto-Generated Variables ---
-\input{results/tables/basic_economics_macros.tex}
 \input{results/tables/hybrid_economics_macros.tex}
-\input{results/tables/static_exit_analysis_macros.tex}
-\input{results/tables/ro_results_fixed_macros.tex}
-\input{results/tables/simulation_setup_macros.tex}
-\input{results/tables/revenue_calibration_macros.tex}
+\input{results/tables/sce1_static_exit_analysis_macros.tex}
+\input{results/tables/sce2_ro_results_fixed_macros.tex}  % Make sure Python exports \HostingROValue
+\input{results/tables/sce3_ro_results_grid_macros.tex}   % Make sure Python exports \GridROValue
+
+% \input{results/tables/basic_economics_macros.tex}
+% \input{results/tables/hybrid_economics_macros.tex}
+% \input{results/tables/static_exit_analysis_macros.tex}
+% \input{results/tables/ro_results_fixed_macros.tex}
+% \input{results/tables/simulation_setup_macros.tex}
+% \input{results/tables/revenue_calibration_macros.tex}
 
 % Set page geometry
 \geometry{a4paper, margin=1in}
@@ -138,24 +143,24 @@ These ideas extend to energy, where robust, risk-aware valuation and management 
 
 We formalize the investment decision faced by a company considering the establishment of a Bitcoin mining farm.
 
-\subsection{Monthly Economic Baseline}
-We assume a project location in West Texas with an industrial electricity rate of \$\BaseElecPrice/kWh. The facility faces fixed monthly operational expenditures (OpEx) of \textbf{\$\BaseMonthlyOpEx}, covering rent, labor, insurance, and maintenance.
+% \subsection{Monthly Economic Baseline}
+% We assume a project location in West Texas with an industrial electricity rate of \$\BaseElecPrice/kWh. The facility faces fixed monthly operational expenditures (OpEx) of \textbf{\$\BaseMonthlyOpEx}, covering rent, labor, insurance, and maintenance.
 
-Under current market conditions (Hashprice $\approx$ \$45/PH/day), the farm generates a monthly revenue of \textbf{\$\BaseMonthlyRevenue}. After deducting electricity costs of \$\BaseMonthlyElec{} and fixed OpEx, the net monthly profit is \textbf{\$\BaseMonthlyProfit}.
+% Under current market conditions (Hashprice $\approx$ \$45/PH/day), the farm generates a monthly revenue of \textbf{\$\BaseMonthlyRevenue}. After deducting electricity costs of \$\BaseMonthlyElec{} and fixed OpEx, the net monthly profit is \textbf{\$\BaseMonthlyProfit}.
 
-This results in a static payback period of \textbf{\BasePaybackMonths{} months} (\BasePaybackYears{} years).
+% This results in a static payback period of \textbf{\BasePaybackMonths{} months} (\BasePaybackYears{} years).
 
-\subsection{Optimal Exit Analysis}
-To assess the impact of asset liquidity, we calculate the Net Present Value (NPV) of the project assuming a variable exit time $T$. This includes the discounted cash flows from operations up to month $T$ and the resale value of the hardware and infrastructure at that time. We assume a monthly depreciation rate of \SalvageDeprRate{} for the mining hardware.
+% \subsection{Optimal Exit Analysis}
+% To assess the impact of asset liquidity, we calculate the Net Present Value (NPV) of the project assuming a variable exit time $T$. This includes the discounted cash flows from operations up to month $T$ and the resale value of the hardware and infrastructure at that time. We assume a monthly depreciation rate of \SalvageDeprRate{} for the mining hardware.
 
-As shown in Figure \ref{fig:pv_exit_curve}, the project value is maximized if the investor plans to exit at \textbf{Month \OptimalExitMonth}, yielding a total NPV of \textbf{\$\MaxProjectPV}. This "concave" profile highlights the trade-off between accumulating operational profits and the rapid depreciation of ASIC hardware.
+% As shown in Figure \ref{fig:pv_exit_curve}, the project value is maximized if the investor plans to exit at \textbf{Month \OptimalExitMonth}, yielding a total NPV of \textbf{\$\MaxProjectPV}. This "concave" profile highlights the trade-off between accumulating operational profits and the rapid depreciation of ASIC hardware.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{results/figures/pv_exit_curve.pdf}
-    \caption{Project NPV as a function of the stopping time $T$, including asset resale value.}
-    \label{fig:pv_exit_curve}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{results/figures/pv_exit_curve.pdf}
+%     \caption{Project NPV as a function of the stopping time $T$, including asset resale value.}
+%     \label{fig:pv_exit_curve}
+% \end{figure}
 
 \subsection{Investment Setup}
 
@@ -269,35 +274,82 @@ Once the coefficients $\hat{\gamma}_a^j$ are estimated, the continuation value i
 \end{equation}
 This process is repeated backwards until $t_0$, yielding the value of the investment option.
 
-\section{Numerical Implementation and Case Study}
+\section{Numerical Implementation and Study Cases }
 
 \subsection{Strategic Baseline: The Hybrid Hosting Model}
 To evaluate the investment, we adopt a ``Hybrid'' or ``Colocation'' investment strategy, which represents the most common and practical entry point for mid-scale mining operations today. In this model, the investor retains ownership of the mining hardware (capital expenditure) but outsources the infrastructure and energy procurement (operational expenditure).
 
 \begin{itemize}
-    \item \textbf{Capital Investment:} The firm purchases the mining hardware at an adjusted secondary-market price of \$\HybridMinerPrice/unit. For our base case of 350 units, the initial sunk cost ($K$) totals \textbf{\$\HybridCapex}. This structure avoids the high interest premiums associated with full hardware leasing.
-    \item \textbf{Operational Structure:} The hardware is deployed in a third-party hosting facility at an all-inclusive rate of \$\HybridHostingRate/kWh. This rate removes the need for capital investment in transformers, land development, and maintenance staff. The facility's total daily energy conversion factor ($\kappa$) is calculated as \textbf{\Kappa{} kWh/day}.
+    \item \textbf{Capital Investment:} The firm purchases 350 modern, high-efficiency mining rigs (e.g., Antminer S19 XP, 140 TH/s) at an adjusted secondary-market price of \$\HybridMinerPrice/unit. This generates a total network computing power of approximately 49 PH/s. The initial sunk cost ($K$) for the hardware totals \textbf{\$\HybridCapex}, avoiding the high interest premiums associated with full hardware leasing.
+    
+    \item \textbf{Operational Structure:} The hardware is deployed in a third-party hosting facility at an all-inclusive rate of \$\HybridHostingRate/kWh. This rate removes the need for capital investment in transformers, land development, and maintenance staff. Consequently, the daily fixed operational cost ($k$) is assumed to be negligible ($k \approx 0$), as costs are fully variable based on energy consumption. The facility's total daily energy conversion factor ($\kappa$) is calculated as \textbf{\Kappa{} kWh/day}.
 \end{itemize}
 
-Assuming current market conditions remain completely static (deterministic), the project generates a positive monthly net profit of \textbf{\$\HybridMonthlyProfit}. This static scenario results in a traditional payback period of \textbf{\HybridPayback{} years}. 
+Assuming current market conditions remain completely static (e.g., a deterministic Hashprice of approximately \$45/PH/day), the project generates a positive monthly net profit of \textbf{\$\HybridMonthlyProfit}. This static scenario results in a traditional payback period of \textbf{\HybridPayback{} years}.
 
-\subsection{Deterministic Project Value and Optimal Exit}
-Before applying stochastic volatility, we establish a strict deterministic floor by calculating the optimal exit timing. This analysis evaluates the Net Present Value (NPV) of the project assuming a variable stopping time $T$. The NPV incorporates both the discounted operational cash flows up to month $T$ and the salvage value of the hardware, which we assume depreciates at an aggressive rate of \textbf{\SalvageDeprRate} per month.
+\subsection{Scenario 1: Deterministic Project Value and Optimal Exit}
 
-Assuming constant hashprices, the deterministic project value is maximized if the investor liquidates the operation at \textbf{Month \StaticExitMonth}, yielding a maximum theoretical NPV of \textbf{\$\StaticMaxPV}. This establishes the baseline value of the project ignoring all crypto-market volatility.
+Before introducing stochastic volatility, we establish a strict deterministic floor by calculating the project's optimal static exit timing. This analysis evaluates the Net Present Value (NPV) of the investment assuming a variable stopping time $T$. The total NPV incorporates both the discounted operational cash flows accumulated up to month $T$ and the salvage (resale) value of the mining hardware at that time. Given the rapid technological obsolescence inherent to ASIC miners, we assume the hardware depreciates at an aggressive rate of \textbf{\SalvageDeprRate} per month.
 
-\section{Results and Discussion}
+Assuming constant market conditions (zero volatility in both Hashprice and energy costs), the project's value profile is concave. This reflects the fundamental trade-off between accumulating steady operational profits and the continuous degradation of the hardware's resale value. 
 
-\subsection{Scenario 2: The "Hosting" Case (Stochastic Revenue)}
-In our first stochastic scenario, we isolate the value of \textit{Revenue Volatility}. Because the firm pays a fixed electricity hosting rate (\$\HybridHostingRate/kWh), energy price risk is eliminated. However, the project remains fully exposed to the extreme volatility of Bitcoin prices and Hashprice. 
+As depicted in Figure \ref{fig:sce1_pv_exit_curve}, the deterministic project value is maximized if the investor plans to liquidate the operation and sell the hardware at \textbf{Month \StaticExitMonth}. This strategy yields a maximum theoretical NPV of \textbf{\$\StaticMaxPV}. This figure establishes the baseline value of the project, completely ignoring the strategic value of reacting to crypto-market volatility.
 
-Crucially, the firm possesses an operational \textit{Switching Option}: management can temporarily suspend mining operations if the Hashprice drops below the hosting break-even threshold, preventing negative cash flows, and resume operations when profitability returns.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{results/figures/sce1_pv_exit_curve_static.pdf}
+    \caption{Deterministic Project NPV as a function of the stopping time $T$. The curve illustrates the trade-off between accumulating operational cash flows and the monthly depreciation of the hardware's resale value.}
+    \label{fig:sce1_pv_exit_curve}
+\end{figure}
 
-We evaluate this flexibility using the Hedged Monte Carlo (HMC) algorithm. When evaluated purely intrinsically (forcing immediate exercise without the flexibility to wait or switch), the traditional NPV under simulated paths drops to \textbf{\$\FixedPowerNPV}. 
+\subsection{Scenario 2: The Energy Constant Case (Stochastic Revenue)}
 
-However, when properly valuing the operational flexibility to weather "crypto winters" and capitalize on "bull markets", the Real Option Value rises significantly to \textbf{\$\FixedPowerROValue}. The difference between these two metrics yields an option premium of \textbf{\$\FixedPowerPremium}. 
+In our first stochastic scenario, we isolate the value of \textit{Revenue Volatility}. Because the firm pays a fixed electricity hosting rate (\$\HybridHostingRate/kWh), energy price risk is eliminated. However, the project remains fully exposed to the extreme volatility of Bitcoin prices ($X_t$) and the resulting Hashprice ($Z_t$).
 
-This result highlights a fundamental principle in highly volatile industries: traditional DCF and static NPV severely underprice assets because they fail to account for management's ability to asymmetricaly capture upside volatility while truncating downside risk through operational suspension.
+\paragraph{Historical Calibration and Simulation}
+To accurately model revenue uncertainty, we first calibrate our Geometric Brownian Motion (GBM) parameters using historical market data. Figure \ref{fig:historical_dual} illustrates the historical co-movement of Bitcoin prices and the Hashprice index. The strong empirical correlation justifies modeling them as coupled stochastic processes within our framework.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{results/figures/historical_bitcoin_dual.pdf}
+    \caption{Historical dynamics of Bitcoin Price (left axis) and Hashprice (right axis). The tight coupling of these metrics serves as the calibration basis for the covariance matrix.}
+    \label{fig:historical_dual}
+\end{figure}
+
+Using these calibrated parameters, we project thousands of potential future paths over the project's lifetime. Figure \ref{fig:simulated_revenue} displays the resulting ``cone of uncertainty'' for both variables. The wideness of these confidence intervals visually underscores the significant risk of a ``crypto winter'' (where revenues drop below the fixed hosting costs) as well as the potential for massive upside.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{results/figures/sce2_simulated_revenue_paths.pdf}
+    \caption{Simulated Monte Carlo paths for Bitcoin ($X_t$) and Hashprice ($Z_t$), displaying the 5\% and 95\% confidence intervals over the forecast horizon.}
+    \label{fig:simulated_revenue}
+\end{figure}
+
+\paragraph{Real Options Valuation and The Switching Option}
+Crucially, the firm possesses an operational \textit{Switching Option}: management can temporarily suspend mining operations if the Hashprice drops below the hosting break-even threshold ($Z_t < \kappa Y_{fixed}$). This prevents negative cash flows, allowing the firm to safely hold the hardware and resume operations when profitability returns.
+
+We evaluate this flexibility using the Hedged Monte Carlo (HMC) algorithm, which calculates the optimal early-exercise (suspension) boundary dynamically across the simulated market paths. Figure \ref{fig:ro_fixed_cost} demonstrates the divergence between the total option value and the intrinsic value over time.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{results/figures/sce2_ro_value_fixed_cost.pdf}
+    \caption{Evolution of the Real Option Value versus Intrinsic Value (Traditional NPV) over the projected timeframe for the Fixed Cost scenario.}
+    \label{fig:ro_fixed_cost}
+\end{figure}
+
+When evaluated purely intrinsically—forcing immediate exercise without the flexibility to wait or switch—the traditional NPV under simulated paths is estimated at \textbf{\$\FixedPowerNPV}. However, when properly valuing the operational flexibility to weather market downturns and capitalize on bull runs, the Real Option Value is calculated at \textbf{\$\FixedPowerROValue}. 
+
+The difference between these two metrics yields a flexibility premium of \textbf{\$\FixedPowerPremium}. This significant premium confirms that traditional NPV severely underprices mining assets by ignoring management's ability to truncate downside risk through operational suspension.
+
+\subsection{Scenario 3: The "Grid" Case (Dual Stochasticity)}
+In the final scenario, the firm bypasses the fixed-rate hosting provider and connects directly to the wholesale electricity grid (ERCOT). This exposes the operation to significant energy price volatility ($Y_t$). However, it also grants the firm the \textit{Spark Spread Option}—the ability to dynamically curtail operations during acute power price spikes while benefiting from significantly lower average off-peak rates.
+
+To value this, the Hedged Monte Carlo engine calibrates a replicating portfolio using historical ERCOT spot prices (as a proxy for short-term power futures). The algorithm determines the optimal two-dimensional stopping boundary across both Bitcoin and Energy prices.
+
+Embracing energy volatility significantly alters the strategic value of the project. In this dual-stochastic environment, the intrinsic NPV is estimated at \textbf{\$\GridNPV}, but the Real Option value rises dramatically to \textbf{\$\GridROValue}. This generates a massive flexibility premium of \textbf{\$\GridPremium}.
+
+\paragraph{Decomposition of Option Value:}
+Comparing the three scenarios reveals the true sources of strategic value in cryptocurrency mining. Traditional DCF and static NPV severely misprice these assets because they fail to account for management's ability to asymmetrically capture upside volatility while truncating downside risk. By securing the operational flexibility to suspend operations during adverse price movements—in both the crypto and energy markets—miners can extract significant value from the inherent volatility of the asset class.
 
 
 \section{Conclusion}

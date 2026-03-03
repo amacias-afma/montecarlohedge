@@ -111,8 +111,8 @@ def plot_prices(df_train, assets_type='bitcoin'):
     color = 'tab:orange'
     ax1.set_xlabel('Date')
     ax1.set_ylabel(f'{asset_1_pm["label"]} {asset_1_pm["unit"]}', color=color)
-    print(df_train.columns)
-    print(asset_1_pm['asset'] in df_train.columns)
+    # print(df_train.columns)
+    # print(asset_1_pm['asset'] in df_train.columns)
     ax1.plot(df_train.index, df_train[asset_1_pm['asset']], color=color, label=asset_1_pm['label'])
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.grid(True, alpha=0.3)
