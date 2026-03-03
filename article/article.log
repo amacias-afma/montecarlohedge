@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  2 MAR 2026 23:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.23)  3 MAR 2026 00:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -497,7 +497,7 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layouthoffset=\dimen303
 \Gm@layoutvoffset=\dimen304
 \Gm@dimlist=\toks45
- (C:\Users\fe_ma\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)) (results/tables/hybrid_economics_macros.tex) (results/tables/sce1_static_exit_analysis_macros.tex) (results/tables/sce2_ro_results_fixed_macros.tex) (results/tables/sce3_ro_results_grid_macros.tex)
+ (C:\Users\fe_ma\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)) (results/tables/sce1_hybrid_economics_macros.tex) (results/tables/sce1_static_exit_analysis_macros.tex) (results/tables/sce2_ro_results_fixed_energy_macros.tex) (results/tables/sce3_ro_results_full_stochastic_macros.tex)
 \c@theorem=\count339
  (C:\Users\fe_ma\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
@@ -505,24 +505,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (article.aux)
 \openout1 = `article.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 85.
-LaTeX Font Info:    ... okay on input line 85.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
  (C:\Users\fe_ma\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count341
@@ -542,122 +542,28 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (C:\Users\fe_ma\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 85.
- (article.out) (article.out)
+Package hyperref Info: Link coloring OFF on input line 79.
 \@outlinefile=\write4
 \openout4 = `article.out'.
 
 
-*geometry* driver: auto-detecting
-*geometry* detected driver: pdftex
-*geometry* verbose mode - [ preamble ] result:
-* driver: pdftex
-* paper: a4paper
-* layout: <same size as paper>
-* layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: 
-* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
-* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
-* \paperwidth=597.50787pt
-* \paperheight=845.04684pt
-* \textwidth=452.9679pt
-* \textheight=700.50687pt
-* \oddsidemargin=0.0pt
-* \evensidemargin=0.0pt
-* \topmargin=-37.0pt
-* \headheight=12.0pt
-* \headsep=25.0pt
-* \topskip=12.0pt
-* \footskip=30.0pt
-* \marginparwidth=44.0pt
-* \marginparsep=10.0pt
-* \columnsep=10.0pt
-* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
-* \hoffset=0.0pt
-* \voffset=0.0pt
-* \mag=1000
-* \@twocolumnfalse
-* \@twosidefalse
-* \@mparswitchfalse
-* \@reversemarginfalse
-* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+c:/Users/fe_ma/Projects/MonteCarloHedge/article/article.tex:79: I can't write on file `article.pdf'.
+(Press Enter to retry, or Control-C to exit; default file extension is `.pdf')
+Please type another file name for output
+c:/Users/fe_ma/Projects/MonteCarloHedge/article/article.tex:79: Emergency stop.
+<to be read again> 
+                   \edef 
+l.79 \begin{document}
+                     
+*** (job aborted, file error in nonstop mode)
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 88.
-(C:\Users\fe_ma\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 88.
- (C:\Users\fe_ma\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Underfull \hbox (badness 10000) in paragraph at lines 90--91
-
- []
-
-[1
-
-{C:/Users/fe_ma/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-
-Package natbib Warning: Citation `LongstaffSchwartz2001' on page 2 undefined on input line 116.
-
-
-Package natbib Warning: Citation `Bouchaud' on page 2 undefined on input line 118.
-
-
-Package natbib Warning: Citation `JPZ' on page 2 undefined on input line 118.
-
-
-Overfull \hbox (32.1728pt too wide) in paragraph at lines 131--132
- []\OT1/cmr/bx/n/12 Hedged Monte Carlo in in-com-plete mar-kets.[] \OT1/cmr/m/n/12 For set-tings driven by his-tor-i-cal/simulation
- []
-
-[2] [3] [4] [5]
-<results/figures/sce1_pv_exit_curve_static.pdf, id=153, 768.80743pt x 394.92168pt>
-File: results/figures/sce1_pv_exit_curve_static.pdf Graphic file (type pdf)
-<use results/figures/sce1_pv_exit_curve_static.pdf>
-Package pdftex.def Info: results/figures/sce1_pv_exit_curve_static.pdf  used on input line 300.
-(pdftex.def)             Requested size: 362.37569pt x 186.14952pt.
- [6]
-<results/figures/historical_bitcoin_dual.pdf, id=161, 856.62221pt x 424.73303pt>
-File: results/figures/historical_bitcoin_dual.pdf Graphic file (type pdf)
-<use results/figures/historical_bitcoin_dual.pdf>
-Package pdftex.def Info: results/figures/historical_bitcoin_dual.pdf  used on input line 314.
-(pdftex.def)             Requested size: 362.37569pt x 179.67635pt.
- [7 <./results/figures/sce1_pv_exit_curve_static.pdf> <./results/figures/historical_bitcoin_dual.pdf>]
-<results/figures/sce2_simulated_revenue_paths.pdf, id=308, 1001.39372pt x 422.92566pt>
-File: results/figures/sce2_simulated_revenue_paths.pdf Graphic file (type pdf)
-<use results/figures/sce2_simulated_revenue_paths.pdf>
-Package pdftex.def Info: results/figures/sce2_simulated_revenue_paths.pdf  used on input line 323.
-(pdftex.def)             Requested size: 452.9679pt x 191.30214pt.
-<results/figures/sce2_ro_value_fixed_cost.pdf, id=310, 627.83588pt x 403.95543pt>
-File: results/figures/sce2_ro_value_fixed_cost.pdf Graphic file (type pdf)
-<use results/figures/sce2_ro_value_fixed_cost.pdf>
-Package pdftex.def Info: results/figures/sce2_ro_value_fixed_cost.pdf  used on input line 335.
-(pdftex.def)             Requested size: 362.37569pt x 233.16014pt.
- [8 <./results/figures/sce2_simulated_revenue_paths.pdf>] [9 <./results/figures/sce2_ro_value_fixed_cost.pdf>] [10] (article.bbl [11])
-
-Package natbib Warning: There were undefined citations.
-
-[12] (article.aux)
- ***********
-LaTeX2e <2025-11-01>
-L3 programming layer <2025-12-24>
- ***********
-Package rerunfilecheck Info: File `article.out' has not changed.
-(rerunfilecheck)             Checksum: E79ADFA9F1C0A85310EBB9EFEE226CC5;4598.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 22010 strings out of 467871
- 414867 string characters out of 5418376
- 800136 words of memory out of 5000000
- 50447 multiletter control sequences out of 15000+600000
- 641063 words of font info for 91 fonts, out of 8000000 for 9000
+ 21636 strings out of 467871
+ 406655 string characters out of 5418376
+ 783821 words of memory out of 5000000
+ 50181 multiletter control sequences out of 15000+600000
+ 628019 words of font info for 41 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,12n,104p,1118b,677s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\fe_ma\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcbx1200.pk> <C:\Users\fe_ma\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\fe_ma\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0700.pk> <C:\Users\fe_ma\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1095.pk> <C:\Users\fe_ma\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1000.pk><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/fe_ma/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on article.pdf (12 pages, 488774 bytes).
-PDF statistics:
- 603 PDF objects out of 1000 (max. 8388607)
- 64 named destinations out of 1000 (max. 500000)
- 201 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 84i,1n,104p,592b,90s stack positions out of 10000i,1000n,20000p,200000b,200000s
+c:/Users/fe_ma/Projects/MonteCarloHedge/article/article.tex:79:  ==> Fatal error occurred, no output PDF file produced!

@@ -13,17 +13,11 @@
 \usepackage{geometry} % For flexible page layout
 
 % --- Auto-Generated Variables ---
-\input{results/tables/hybrid_economics_macros.tex}
+% --- Auto-Generated Variables ---
+\input{results/tables/sce1_hybrid_economics_macros.tex}
 \input{results/tables/sce1_static_exit_analysis_macros.tex}
-\input{results/tables/sce2_ro_results_fixed_macros.tex}  % Make sure Python exports \HostingROValue
-\input{results/tables/sce3_ro_results_grid_macros.tex}   % Make sure Python exports \GridROValue
-
-% \input{results/tables/basic_economics_macros.tex}
-% \input{results/tables/hybrid_economics_macros.tex}
-% \input{results/tables/static_exit_analysis_macros.tex}
-% \input{results/tables/ro_results_fixed_macros.tex}
-% \input{results/tables/simulation_setup_macros.tex}
-% \input{results/tables/revenue_calibration_macros.tex}
+\input{results/tables/sce2_ro_results_fixed_energy_macros.tex}
+\input{results/tables/sce3_ro_results_full_stochastic_macros.tex}
 
 % Set page geometry
 \geometry{a4paper, margin=1in}
@@ -74,7 +68,7 @@
 \title{\textbf{Optimal Investment in Bitcoin Mining Farms: A Hedged Monte-Carlo Approach}}
 \author{
     Y. Kitapbayev\thanks{Affiliation and contact details.} \and
-    F. Macias\thanks{Affiliation.} \and
+    F. Macias\thanks{AFMA Ingenieria Spa} \and
     A. Alqubaisi\thanks{Affiliation.} \and
     M. Lopez de Prado\thanks{Affiliation.} \and
     A. Lipton\thanks{Affiliation.} \and
@@ -274,7 +268,7 @@ Once the coefficients $\hat{\gamma}_a^j$ are estimated, the continuation value i
 \end{equation}
 This process is repeated backwards until $t_0$, yielding the value of the investment option.
 
-\section{Numerical Implementation and Study Cases }
+\section{Numerical Implementation and Case Study}
 
 \subsection{Strategic Baseline: The Hybrid Hosting Model}
 To evaluate the investment, we adopt a ``Hybrid'' or ``Colocation'' investment strategy, which represents the most common and practical entry point for mid-scale mining operations today. In this model, the investor retains ownership of the mining hardware (capital expenditure) but outsources the infrastructure and energy procurement (operational expenditure).
@@ -285,7 +279,7 @@ To evaluate the investment, we adopt a ``Hybrid'' or ``Colocation'' investment s
     \item \textbf{Operational Structure:} The hardware is deployed in a third-party hosting facility at an all-inclusive rate of \$\HybridHostingRate/kWh. This rate removes the need for capital investment in transformers, land development, and maintenance staff. Consequently, the daily fixed operational cost ($k$) is assumed to be negligible ($k \approx 0$), as costs are fully variable based on energy consumption. The facility's total daily energy conversion factor ($\kappa$) is calculated as \textbf{\Kappa{} kWh/day}.
 \end{itemize}
 
-Assuming current market conditions remain completely static (e.g., a deterministic Hashprice of approximately \$45/PH/day), the project generates a positive monthly net profit of \textbf{\$\HybridMonthlyProfit}. This static scenario results in a traditional payback period of \textbf{\HybridPayback{} years}.
+Assuming current market conditions remain completely static (e.g., a deterministic Hashprice of approximately \$45/PH/day), the project generates a positive monthly net profit of \textbf{\$\HybridMonthlyProfit}. This static scenario results in a traditional payback period of \textbf{\HybridPayback{} years}. 
 
 \subsection{Scenario 1: Deterministic Project Value and Optimal Exit}
 
@@ -302,6 +296,8 @@ As depicted in Figure \ref{fig:sce1_pv_exit_curve}, the deterministic project va
     \label{fig:sce1_pv_exit_curve}
 \end{figure}
 
+\section{Results and Discussion}
+
 \subsection{Scenario 2: The Energy Constant Case (Stochastic Revenue)}
 
 In our first stochastic scenario, we isolate the value of \textit{Revenue Volatility}. Because the firm pays a fixed electricity hosting rate (\$\HybridHostingRate/kWh), energy price risk is eliminated. However, the project remains fully exposed to the extreme volatility of Bitcoin prices ($X_t$) and the resulting Hashprice ($Z_t$).
@@ -312,7 +308,7 @@ To accurately model revenue uncertainty, we first calibrate our Geometric Browni
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{results/figures/historical_bitcoin_dual.pdf}
-    \caption{Historical dynamics of Bitcoin Price (left axis) and Hashprice (right axis). The tight coupling of these metrics serves as the calibration basis for the covariance matrix.}
+    \caption{Historical dynamics of Bitcoin Price and Hashprice. The tight coupling of these metrics serves as the calibration basis for the covariance matrix.}
     \label{fig:historical_dual}
 \end{figure}
 
@@ -332,25 +328,51 @@ We evaluate this flexibility using the Hedged Monte Carlo (HMC) algorithm, which
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{results/figures/sce2_ro_value_fixed_cost.pdf}
+    \includegraphics[width=0.8\textwidth]{results/figures/sce2_ro_value_fixed_energy.pdf}
     \caption{Evolution of the Real Option Value versus Intrinsic Value (Traditional NPV) over the projected timeframe for the Fixed Cost scenario.}
     \label{fig:ro_fixed_cost}
 \end{figure}
 
-When evaluated purely intrinsically—forcing immediate exercise without the flexibility to wait or switch—the traditional NPV under simulated paths is estimated at \textbf{\$\FixedPowerNPV}. However, when properly valuing the operational flexibility to weather market downturns and capitalize on bull runs, the Real Option Value is calculated at \textbf{\$\FixedPowerROValue}. 
+When evaluated purely intrinsically—forcing immediate exercise without the flexibility to wait or switch—the traditional NPV under simulated paths is estimated at \textbf{\$\FixedEnergyNPV}. However, when properly valuing the operational flexibility to weather market downturns and capitalize on bull runs, the Real Option Value is calculated at \textbf{\$\FixedEnergyROValue}. 
 
-The difference between these two metrics yields a flexibility premium of \textbf{\$\FixedPowerPremium}. This significant premium confirms that traditional NPV severely underprices mining assets by ignoring management's ability to truncate downside risk through operational suspension.
+The difference between these two metrics yields a flexibility premium of \textbf{\$\FixedEnergyPremium}. This significant premium confirms that traditional NPV severely underprices mining assets by ignoring management's ability to truncate downside risk through operational suspension.
 
-\subsection{Scenario 3: The "Grid" Case (Dual Stochasticity)}
-In the final scenario, the firm bypasses the fixed-rate hosting provider and connects directly to the wholesale electricity grid (ERCOT). This exposes the operation to significant energy price volatility ($Y_t$). However, it also grants the firm the \textit{Spark Spread Option}—the ability to dynamically curtail operations during acute power price spikes while benefiting from significantly lower average off-peak rates.
 
-To value this, the Hedged Monte Carlo engine calibrates a replicating portfolio using historical ERCOT spot prices (as a proxy for short-term power futures). The algorithm determines the optimal two-dimensional stopping boundary across both Bitcoin and Energy prices.
+\subsection{Scenario 3: The "Grid" Case (Full Stochasticity)}
 
-Embracing energy volatility significantly alters the strategic value of the project. In this dual-stochastic environment, the intrinsic NPV is estimated at \textbf{\$\GridNPV}, but the Real Option value rises dramatically to \textbf{\$\GridROValue}. This generates a massive flexibility premium of \textbf{\$\GridPremium}.
+In the final scenario, the firm bypasses the fixed-rate hosting provider and connects directly to the wholesale electricity grid (e.g., ERCOT in Texas). This exposes the operation to significant energy price volatility ($Y_t$). However, it also grants the firm the \textit{Spark Spread Option}—the ability to dynamically curtail operations during acute power price spikes while benefiting from significantly lower average off-peak rates.
+
+\paragraph{Energy Volatility and The Hedging Proxy}
+Unlike Bitcoin, electricity cannot be efficiently stored, resulting in spot prices that exhibit extreme jumps and seasonality. To value the option to curtail power, the Hedged Monte Carlo (HMC) engine requires a tradable asset to construct a replicating portfolio. Because short-term electricity futures are often illiquid, we utilize historical Natural Gas futures as a highly correlated proxy for ERCOT spot prices.
+
+Figure \ref{fig:historical_electricity} illustrates the historical volatility of these energy costs. By calibrating the covariance matrix between Bitcoin returns and this energy proxy, the algorithm learns how to dynamically delta-hedge the dual risk.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{results/figures/historical_electricity_dual.pdf}
+    \caption{Historical dynamics of wholesale electricity proxy prices. The extreme right-tail skewness (price spikes) highlights the necessity of the curtailment option.}
+    \label{fig:historical_electricity}
+\end{figure}
+
+\paragraph{Real Options Valuation and The Spark Spread}
+In this dual-stochastic environment, the optimal stopping boundary becomes two-dimensional. The algorithm evaluates whether the immediate mining revenue exceeds the spot electricity cost ($X_t > \kappa Y_t$). During severe energy price spikes (common during summer months or extreme winter storms), the model triggers a temporary shutdown, avoiding massive operational losses.
+
+We simulate thousands of joint paths for $X_t$, $Z_t$, and $Y_t$ to calculate the final project value. As shown in Figure \ref{fig:sce3_ro_value}, embracing energy volatility significantly alters the strategic value profile of the project.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{results/figures/sce3_ro_value_full_stochastic.pdf}
+    \caption{Evolution of the Real Option Value versus Intrinsic Value under full stochasticity. The Spark Spread curtailment option protects the firm against extreme upside spikes in power costs.}
+    \label{fig:sce3_ro_value}
+\end{figure}
+
+When forced to operate continuously without the ability to shut down (Intrinsic NPV), the project's value is estimated at \textbf{\$\GridNPV}. However, when the HMC algorithm properly values the Spark Spread Option under full stochastic conditions, the Real Option value is \textbf{\$\GridROValue}. This generates a flexibility premium of \textbf{\$\GridPremium}.
 
 \paragraph{Decomposition of Option Value:}
-Comparing the three scenarios reveals the true sources of strategic value in cryptocurrency mining. Traditional DCF and static NPV severely misprice these assets because they fail to account for management's ability to asymmetrically capture upside volatility while truncating downside risk. By securing the operational flexibility to suspend operations during adverse price movements—in both the crypto and energy markets—miners can extract significant value from the inherent volatility of the asset class.
+Comparing the three scenarios reveals the true sources of strategic value in cryptocurrency mining. Traditional DCF and static NPV misprice these assets because they fail to account for management's ability to asymmetrically capture upside volatility while truncating downside risk. By securing the operational flexibility to suspend operations during adverse price movements—in both the crypto (Scenario 2) and energy markets (Scenario 3)—miners can extract optimal value from the inherent volatility of the asset class.
 
+\section*{Data and Code Availability}
+The Python source code, Jupyter notebooks, and datasets used to calibrate the models and execute the Hedged Monte Carlo simulations in this study are publicly available on GitHub. The repository allows for full replication of the results and figures presented herein and can be accessed at: \url{https://github.com/amacias-afma/montecarlohedge.git}.
 
 \section{Conclusion}
 
