@@ -51,13 +51,34 @@ def margrabe_exchange_option_delta(Sx, Sy, sigma_x, sigma_y, qx, qy, rho, r, T):
   Returns:
   tuple: (delta_x, delta_y)
   """
+# margrabe_exchange_option_delta(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], 
+#                                                                    sigma_x_annual, sigma_y_annual, 
+#                                                                    df_ret_mean[assets[0]], 
+#                                                                    df_ret_mean[assets[1]], 
+#                                                                    corr, r, delta_t)
 
   sigma = np.sqrt(sigma_x**2 + sigma_y**2 - 2 * rho * sigma_x * sigma_y)
+  
+  print('-------------------------sigma, T, qx, qy ------------')
+  print(sigma, T, qx, qy, sigma * np.sqrt(T))
+  print('-------------------------qy, qx, 0.5 * sigma**2 ------------')
+  print(qy, qx, 0.5 * sigma**2)
+  print('-------------------------sigma, T, qx, qy ------------')
+
+  print((qy - qx + 0.5 * sigma**2) * T)
+  print(np.log(Sx / Sy))
+  print('-------------------------sigma, T, qx, qy ------------')
+
   d1 = (np.log(Sx / Sy) + (qy - qx + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
   d2 = d1 - sigma * np.sqrt(T)
+  print('--------d1------------')
+  print(d1)
+  print('--------d2------------')
+  print(d2)
+  print('--------end d------------')
 
   delta_x = np.exp(-qx * T) * norm.cdf(d1)
-  delta_y = np.exp(-qy * T) * norm.cdf(d2)
+  delta_y = -np.exp(-qy * T) * norm.cdf(d2)
 
   return delta_x, delta_y
 
@@ -126,7 +147,9 @@ def base_bs(df_prices, df_return, delta_t, r, kappa, basis_type=None):
   Returns:
   pd.DataFrame: A DataFrame containing the basis functions.
   """
+
   df_return_aux = np.log(1 + df_return / df_prices)
+  df_return_aux /= delta_t
 
   df_ret_std = df_return_aux.std()
   df_ret_cor = df_return_aux.corr()
@@ -153,14 +176,24 @@ def base_bs(df_prices, df_return, delta_t, r, kappa, basis_type=None):
       # print('-' * 10)
       # print(df_prices[asset].head())
       # print(asset, df_mean[asset], r, delta_t, df_ret_std[asset])
-      df_base['call_option'] = blsprice(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset] * np.sqrt(252))
+      df_base['call_option'] = blsprice(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset])
   elif basis_type['option_basis'] == 'margrabe':
-    kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
+    # kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
+
     corr = df_ret_cor[assets[0]][assets[1]]
-    df_base['call_option'] = margrabe_exchange_option_price(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], \
-                                                                   df_ret_std[assets[0]], kappa_aux * df_ret_std[assets[1]], \
-                                                                   df_ret_mean[assets[0]], df_ret_mean[assets[1]], \
+    # kappa_aux = kappa
+    sigma_x = df_ret_std[assets[0]]
+    sigma_y = kappa * df_ret_std[assets[1]]
+
+    df_base['call_option'] = margrabe_exchange_option_price(df_prices[assets[0]], kappa * df_prices[assets[1]], \
+                                                                   sigma_x, sigma_y, \
+                                                                   df_ret_mean[assets[0]], kappa * df_ret_mean[assets[1]], \
                                                                    corr, r, delta_t)
+
+    print('-----------df_base-----------')
+    print(df_base['call_option'])
+    print('----------end-----df_base-----------')
+
   return df_base
 
 def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
@@ -178,7 +211,17 @@ def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
   Returns:
   pd.DataFrame: A DataFrame containing the delta-weighted basis functions.
   """
+  delta_t = 1 / 12
+
+  print('-----df_return-----')
+
+  print(df_return.head())
+
   df_return_aux = np.log(1 + df_return / df_prices)
+  df_return_aux /= delta_t
+
+  print(df_return_aux.head())
+  print('-----df_return end ----------')
 
   df_ret_std = df_return_aux.std()
   df_ret_cor = df_return_aux.corr()
@@ -197,26 +240,61 @@ def base_bs_delta(df_prices, df_return, delta_t, r, kappa, basis_type=None):
   for asset in df_prices.columns: # Fix: Populate assets dictionary correctly
     for order in range(basis_type['pol_order']):
       df_base[f'dl_po_{order}_{asset}'] = (df_prices[asset] - df_mean[asset]) ** order
-      df_base[f'dl_po_{order}_{asset}'] *= df_return[asset]
+      df_base[f'dl_po_{order}_{asset}'] *= df_return_aux[asset]
 
   if basis_type['option_basis'] == 'black-scholes':
     for asset in df_prices.columns:
-      df_base[f'dl_option_{asset}'] = blsdelta(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset] * np.sqrt(252))
-      df_base[f'dl_option_{asset}'] *= df_return[asset]
-  # elif basis_type['option_basis'] == 'margrabe':
-  #   corr = df_ret_cor[assets[0]][assets[1]]
-  #   # kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
-  #   kappa_aux = kappa
-  #   delta_x, delta_y = margrabe_exchange_option_delta(df_prices[assets[0]], kappa_aux * df_prices[assets[1]], \
-  #                                                                  df_ret_std[assets[0]], kappa_aux * df_ret_std[assets[1]], \
-  #                                                                  df_ret_mean[assets[0]], df_ret_mean[assets[1]], \
-  #                                                                  corr, r, delta_t)
-  #   df_base[f'dl_option_{assets[0]}'] = delta_x * df_return[assets[0]]
-  #   print('-------delta_y-----------------')
-  #   print(delta_y)
-  #   print('-------df_return[assets[1]]-----------------')
-  #   print(df_return[assets[1]])
-  #   df_base[f'dl_option_{assets[1]}'] = delta_y * df_return[assets[1]]
+      df_base[f'dl_option_{asset}'] = blsdelta(df_prices[asset], df_mean[asset], r, delta_t, df_ret_std[asset])
+      df_base[f'dl_option_{asset}'] *= df_return_aux[asset]
+  
+  elif basis_type['option_basis'] == 'margrabe':
+    corr = df_ret_cor[assets[0]][assets[1]]
+    sigma_x = df_ret_std[assets[0]]
+
+    sigma_y = kappa * df_ret_std[assets[1]] / 100000
+    # sigma_y = 2
+
+
+    # kappa_aux = df_prices[assets[0]].mean() / df_prices[assets[1]].mean()
+    # kappa_aux = kappa
+    
+    # sigma_x_annual = df_ret_std[assets[0]]
+    # sigma_y_annual = kappa_aux * df_ret_std[assets[1]] * np.sqrt(252)
+
+    print('-------df_prices[assets[0]] - kappa_aux * df_prices[assets[1]]-----------------')
+    print(df_prices[assets[0]] - kappa * df_prices[assets[1]])
+    print((df_prices[assets[0]] - kappa * df_prices[assets[1]]).mean())
+    print('------------------------end-----------------')
+
+    print('-------df_return[assets[0]] - kappa_aux * df_return[assets[1]]-----------------')
+    print((df_return[assets[0]] - kappa * df_return[assets[1]]).mean())
+    print('------------------------end-----------------')
+
+    print('-------sigma_x, sigma_y-----------------')
+    print(sigma_x, sigma_y)
+    print('-------corr, r, 1 / 12-----------------')
+    print(corr, r, 1 / 12)
+
+    delta_x, delta_y = margrabe_exchange_option_delta(df_prices[assets[0]], kappa * df_prices[assets[1]], 
+                                                                   sigma_x, sigma_y, 
+                                                                   df_ret_mean[assets[0]], 
+                                                                   kappa * df_ret_mean[assets[1]] / 100000, 
+                                                                   corr, r, 1 / 12)
+    
+    # print('-------df_return[assets[1]]-----------------')
+    # print(df_return[assets[0]])
+
+    # print('-------df_return[assets[1]]-----------------')
+    # print(df_return[assets[1]])
+
+    df_base[f'dl_option_{assets[0]}'] = delta_x * df_return_aux[assets[0]]
+    print('-------delta_x-----------------')
+    print(delta_x)
+
+    print('-------delta_y-----------------')
+    print(delta_y)
+
+    df_base[f'dl_option_{assets[1]}'] = delta_y * df_return_aux[assets[1]]
 
   return df_base
 
